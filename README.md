@@ -8,9 +8,9 @@ Midwest: Sarah
     
 Northeast: Rachael
 
-   * data: article_words_NE.csv
-   * Individual Html: Lab7_SOLO.html
-   * Individual Rmd: Lab7_SOLO.Rmd
+    * data: article_words_NE.csv
+    * Individual Html: Lab7_SOLO.html
+    * Individual Rmd: Lab7_SOLO.Rmd
 
 South: Samarth
 
