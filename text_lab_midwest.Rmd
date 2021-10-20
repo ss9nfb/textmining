@@ -1,5 +1,5 @@
 ---
-title: "text_lab_midwest"
+title: "Chicago Daily Herald Text Mining"
 author: "Sarah Gould"
 date: "10/19/2021"
 output: html_document
@@ -9,29 +9,22 @@ output: html_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-Congratulations you've successfully transferred from being a NBA 'quant' scout to a consultant specializing in US national sentiment! You've been hired by a non-profit in secret to track the level of support nationally and regionally for the Climate Change issues. The goal is to get a general idea of patterns associated with articles being written on the broad topic of Climate Change (you can also choose to select a sub-topic). In doing so your data science team has decided to explore periodicals from around the country in a effort to track the relative positive or negative sentiment and word frequencies. Luckily you have access to a world class library search engine call LexusNexus (NexusUni) that provides access to newspapers from around the country dating back decades. You'll first need to decided what words you want to track and what time might be interesting to begin your search. 
+/--------------------
 
-You'll need to select several newspapers from different regions in the country limiting the search to 100 articles from each paper, run sentiment analysis with each newspaper serving as a corpus and then compare the level of positive or negative connotation associated with the outcomes. Also, work through tf-idf on each corpus (newspapers) and compare the differences between the distributions (5 to 6 newspapers should be fine)
+*General Procedure*
 
-Your main goal (and the goal of all practicing data scientists!) is to translate this information into action. What patterns do you see, why do you believe this to be the case? What additional information might you want? Be as specific as possible, but keep in mind this is an initial exploratory effort...more analysis might be needed...but the result can and should advise the next steps you present to the firm. 
+1. Load data and necessary packages
+2. Read in each article (total of 10), clean the data and do individual sentiment analysis and produce word clouds
+3. Merge the article data together and do sentiment analysis of the entirety of the Chicago Daily Herald
+4. Produce and analyze a sentiment range graph
+5. Produce and analyze a word cloud, highlighting the top 50 represented words
 
+/--------------------
 
-Please submit a cleanly knitted HTML file describing in detail the steps you 
-took along the way, the results of your analysis and most importantly the implications/next steps you would recommend.  You will report your final 
-results and recommendations next week in class. This will be 5 minutes per group. 
+<center><img src="midwest.png" alt="midwest map" width="500"/></center>
+<br/>
 
-You will need also need to try to collaborate within your group via a GitHub repo, if you choose it would be fine to assign 1 or 2 regions/newspapers per group member, that can then be added to the repo individually. Create a main repo, everyone should work in this repo and submit independently using forking/pull requests. Select a repo owner that sets up access (read access) for the week, we will rotate owners next week. 
-Also, submit a link to your the GitHub repo (every group member can submit the same link). 
-
-
-Rstudio Guidance on Git and Github (Including Branching/Pull Requests): https://r-pkgs.org/git.html#git-branch
-
-
-Here is the link to the database search via the UVA Library that should lead you to LexusNexus (Now Nexas Uni)
-https://guides.lib.virginia.edu/az.php?a=l
-
-
-```{r}
+```{r, include=FALSE}
 library(tidyverse)
 #install.packages("tidytext")
 library(tidytext)
@@ -43,7 +36,7 @@ library(gutenbergr)
 library(textdata)
 ```
 
-```{r}
+```{r, include=FALSE}
 
 # clean the data
 clean_data <- function(dataSet, colName) {
@@ -78,7 +71,7 @@ word_cloud <- function(dataSet) {
 
 
 
-```{r, message=FALSE}
+```{r, message=FALSE, include=FALSE}
 # 1st Article -- Download and Clean
 c_1 <- read_lines("Climate change endangers bird habitats_ then birds.txt")
 c_1 <- tibble(c_1)
@@ -95,7 +88,7 @@ word_cloud(c_1)
 
 ```
 
-```{r, message=FALSE}
+```{r, message=FALSE, include=FALSE}
 # 2nd Article -- Download and Clean
 c_2 <- read_lines("Climate change has affected 85_ worldwide_ study says.txt")
 c_2 <- tibble(c_2)
@@ -112,7 +105,7 @@ word_cloud(c_2)
 ```
 
 
-```{r, message=FALSE}
+```{r, message=FALSE, include=FALSE}
 # 3rd Article -- Download and Clean
 c_3 <- read_lines("Climate change is real_ and it requires us to act.txt")
 c_3 <- tibble(c_3)
@@ -129,7 +122,7 @@ word_cloud(c_3)
 ```
 
 
-```{r, message=FALSE}
+```{r, message=FALSE, include=FALSE}
 # 4th Article -- Download and Clean
 c_4 <- read_lines("Study blames climate change for 37_ of global heat deat.txt")
 c_4 <- tibble(c_4)
@@ -146,7 +139,7 @@ word_cloud(c_4)
 ```
 
 
-```{r, message=FALSE}
+```{r, message=FALSE, include=FALSE}
 # 5th Article -- Download and Clean
 c_5 <- read_lines("Talk with your children about climate change Children_.txt")
 c_5 <- tibble(c_5)
@@ -163,7 +156,7 @@ word_cloud(c_5)
 ```
 
 
-```{r, message=FALSE}
+```{r, message=FALSE, include=FALSE}
 # 6th Article -- Download and Clean
 c_6 <- read_lines("The politics of climate change.txt")
 c_6 <- tibble(c_6)
@@ -179,7 +172,7 @@ sent_ana(c_6, "The politics of climate change.txt")
 word_cloud(c_6)
 ```
 
-```{r, message=FALSE}
+```{r, message=FALSE, include=FALSE}
 # 7th Article -- Download and Clean
 c_7 <- read_lines("What a changing climate means for government.txt")
 c_7 <- tibble(c_7)
@@ -195,7 +188,7 @@ sent_ana(c_7, "The politics of climate change.txt")
 word_cloud(c_7)
 ```
 
-```{r, message=FALSE}
+```{r, message=FALSE, include=FALSE}
 # 8th Article -- Download and Clean
 c_8 <- read_lines("Why are the Great Lakes rising_.txt")
 c_8 <- tibble(c_8)
@@ -211,7 +204,7 @@ sent_ana(c_8, "Why are the Great Lakes rising_.txt")
 word_cloud(c_8)
 ```
 
-```{r, message=FALSE}
+```{r, message=FALSE, include=FALSE}
 # 9th Article -- Download and Clean
 c_9 <- read_lines("World Bank_ Climate change could result in 100 million.txt")
 c_9 <- tibble(c_9)
@@ -227,7 +220,7 @@ sent_ana(c_9, "World Bank_ Climate change could result in 100 million.txt")
 word_cloud(c_9)
 ```
 
-```{r, message=FALSE}
+```{r, message=FALSE, include=FALSE}
 # 10th Article -- Download and Clean
 c_10 <- read_lines("_Americans are waking up__ two-thirds say climate crisi.txt")
 c_10 <- tibble(c_10)
@@ -244,7 +237,7 @@ word_cloud(c_10)
 ```
 
 
-```{r}
+```{r, include=FALSE}
 # Merge all the 10 articles into ONE newspaper dataset
 merge_datasets <- function(df1, df2) {
   df_combined <- merge(df1, df2, by="word", all.x=T, all.y=T)
@@ -272,7 +265,7 @@ head(all_ChicagoDH)
 ```
 
 
-```{r, message=FALSE}
+```{r, message=FALSE, include=FALSE}
 # Read the raw text for ALL articles and convert to tibble
 c1 <- as.tibble(read_lines("Climate change endangers bird habitats_ then birds.txt"))
 c2 <- as.tibble(read_lines("Climate change has affected 85_ worldwide_ study says.txt"))
@@ -356,9 +349,16 @@ c_sentiment_bing <- newspaper_words_new %>%
 
 ```
 
-
-
 ```{r}
+# Table format of the categorized words
+table(c_sentiment_nrc$sentiment)
+```
+
+In terms of the articles as a whole and the "nrc" sentiment, there is a mostly even representation of both positive and negative words. There is a slight increase in the number of positive words, with the majority of which being classified under "trust." Relating to the topic being analyzed, climate change is a rather neutral topic that aims to bring attention to climate change awareness. In the Midwest region, the negative impact of climate change isn't as evident compared to other regions experiencing forest fires or droughts from global warming; therefore, the limited variance between the number of negative and positive is expected.
+
+/--------------------
+
+```{r, message=FALSE}
 # Plot the sentiment range w/o stop words
 ggplot(data = c_sentiment_affin, 
        aes(x=value)
@@ -369,6 +369,10 @@ ggplot(data = c_sentiment_affin,
 ```
 
 
+In opposition to the "nrc" sentiment analysis, the "affin" sentiment analysis indicated a slighlty larger representation of negative words than positive words. The positive words are more evenly spread out among the various levels of positivity (0-3), whereas the negative words have a higher representation of the "-2" level of negativity. This can be related to the more moderate negative words that are referenced to climate change. Similarly, the positive words use more moderate references and are not overly positive comparatively. The reasoning for this can be reiterated from the section above where climate change, in terms of the Midwest, is relatively more of a neutral topic and therefore does not include either overly negative or overly positive words.
+
+/--------------------
+
 ```{r}
 # Make a word cloud w/o stop words
 set.seed(42)
@@ -378,3 +382,16 @@ ggplot(newspaper_words_new[1:50,], aes(label = word, size = n)
   theme_minimal()
 ```
 
+Indicated in the word cloud, the top represented words are typical of climate change topics, specifically: climate, change, global, warming, heat. However, the words specific to the Midwest would include: lakes, water, Chicago, birds. These words are related to the area distinctive to the Midwest, such as the Great Lakes. This word cloud is visually as expected, with the inclusion of more general climate change words but also the inclusion of Midwest-specific terms.
+In the table outputted below, it includes the top 25 words, sorted from most significant to least significant.
+
+<br/>
+
+```{r}
+# Top 25 words in the Midwest
+top_25 <- newspaper_words_new[1:25,2] %>%
+  rename(midwest.top25=word)
+head(top_25)
+```
+
+/--------------------
