@@ -1,5 +1,10 @@
 # Textmining
 
+All Regions:
+
+    * Individual Html: Lab7_AllRegions.html
+    * Individual Rmd: Lab7_AllRegions.Rmd
+
 Midwest: Sarah
 
     * data: midwest.csv
