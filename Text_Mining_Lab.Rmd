@@ -1,0 +1,620 @@
+---
+title: "Tidytext"
+author: "Nathan Patton"
+date: "10/18/2001"
+output: html_document
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+```{r}
+library(tidyverse)
+#install.packages("tidytext")
+library(tidytext)
+#install.packages("ggwordcloud")
+library(ggwordcloud)
+#install.packages("gutenbergr") 
+library(gutenbergr)
+#install.packages('textdata')
+library(textdata)
+#install.packages("textreadr")
+library(textreadr)
+```
+
+```{r}
+LA_times_1 <- read_rtf("C:/Users/natha/OneDrive/Documents/DS-3001/My Projects/Text Mining/CALIFORNIA DROUGHT_ The driest year in a century_ Excep.RTF")
+LA_times_1 = tibble(LA_times_1)
+
+LA_times_2 <- read_rtf("C:/Users/natha/OneDrive/Documents/DS-3001/My Projects/Text Mining/PERSPECTIVES_ LETTER FROM WASHINGTON_ There_s still hop.RTF")
+LA_times_2 = tibble(LA_times_2)
+
+LA_times_3 <- read_rtf("C:/Users/natha/OneDrive/Documents/DS-3001/My Projects/Text Mining/Hope isn_t a climate-change option -- but activism is (1).RTF")
+LA_times_3 = tibble(LA_times_3)
+
+LA_times_4 <- read_rtf("C:/Users/natha/OneDrive/Documents/DS-3001/My Projects/Text Mining/Fan of national parks_ Get ready for them to heat up_ C.RTF")
+LA_times_4 = tibble(LA_times_4)
+
+LA_times_5 <- read_rtf("C:/Users/natha/OneDrive/Documents/DS-3001/My Projects/Text Mining/Second Opinion __ BIG IDEAS ON GLOBAL CHALLENGES_ The m.RTF")
+LA_times_5 = tibble(LA_times_5)
+
+LA_times_6 <- read_rtf("C:/Users/natha/OneDrive/Documents/DS-3001/My Projects/Text Mining/PERSPECTIVES_ Firms told to come clean on climate change.RTF")
+LA_times_6 = tibble(LA_times_6)
+
+LA_times_7 <- read_rtf("C:/Users/natha/OneDrive/Documents/DS-3001/My Projects/Text Mining/Biden pushes climate legislation_ Wrapping up his trip.RTF")
+LA_times_7 = tibble(LA_times_7)
+
+LA_times_8 <- read_rtf("C:/Users/natha/OneDrive/Documents/DS-3001/My Projects/Text Mining/PERSPECTIVES_ The dry facts on the drought in the Weste.RTF")
+LA_times_8 = tibble(LA_times_8)
+
+LA_times_9 <- read_rtf("C:/Users/natha/OneDrive/Documents/DS-3001/My Projects/Text Mining/Brutal fire season is still _far from over__ Dryness_ h.RTF")
+LA_times_9 = tibble(LA_times_9)
+
+LA_times_10 <- read_rtf("C:/Users/natha/OneDrive/Documents/DS-3001/My Projects/Text Mining/The Pacific Northwest melts.RTF")
+LA_times_10 = tibble(LA_times_10)
+
+#Looks like we have some extra info there at the top and bottom so let's remove those rows.
+
+#1st article 
+
+LA_times_1 <- LA_times_1[19:43, ]
+
+LA_times_1$LA_times_1 <- as.character(LA_times_1$LA_times_1)
+
+LA_times_1 <- LA_times_1 %>%
+  unnest_tokens(word, LA_times_1)%>%
+  anti_join(stop_words)%>%
+  count(word, sort=TRUE)
+
+#2nd article
+
+LA_times_2 <- LA_times_2[19:42, ]
+
+LA_times_2$LA_times_2 <- as.character(LA_times_2$LA_times_2)
+
+LA_times_2 <- LA_times_2 %>%
+  unnest_tokens(word, LA_times_2)%>%
+  anti_join(stop_words)%>%
+  count(word, sort=TRUE)
+
+#3rd article
+
+LA_times_3 <- LA_times_3[19:31, ]
+
+LA_times_3$LA_times_3 <- as.character(LA_times_3$LA_times_3)
+
+LA_times_3 <- LA_times_3 %>%
+  unnest_tokens(word, LA_times_3)%>%
+  anti_join(stop_words)%>%
+  count(word, sort=TRUE)
+
+#4th article
+
+LA_times_4 <- LA_times_4[19:44, ]
+
+LA_times_4$LA_times_4 <- as.character(LA_times_4$LA_times_4)
+
+LA_times_4 <- LA_times_4 %>%
+  unnest_tokens(word, LA_times_4)%>%
+  anti_join(stop_words)%>%
+  count(word, sort=TRUE)
+
+#5th article
+
+LA_times_5 <- LA_times_5[19:35, ]
+
+LA_times_5$LA_times_5 <- as.character(LA_times_5$LA_times_5)
+
+LA_times_5 <- LA_times_5 %>%
+  unnest_tokens(word, LA_times_5)%>%
+  anti_join(stop_words)%>%
+  count(word, sort=TRUE)
+
+#6th article 
+
+LA_times_6 <- LA_times_6[19:44, ]
+
+LA_times_6$LA_times_6 <- as.character(LA_times_6$LA_times_6)
+
+LA_times_6 <- LA_times_6 %>%
+  unnest_tokens(word, LA_times_6)%>%
+  anti_join(stop_words)%>%
+  count(word, sort=TRUE)
+
+#7th article
+
+LA_times_7 <- LA_times_7[20:35, ]
+
+LA_times_7$LA_times_7 <- as.character(LA_times_7$LA_times_7)
+
+LA_times_7 <- LA_times_7 %>%
+  unnest_tokens(word, LA_times_7)%>%
+  anti_join(stop_words)%>%
+  count(word, sort=TRUE)
+
+#8th article
+
+LA_times_8 <- LA_times_8[19:66, ]
+
+LA_times_8$LA_times_8 <- as.character(LA_times_8$LA_times_8)
+
+LA_times_8 <- LA_times_8 %>%
+  unnest_tokens(word, LA_times_8)%>%
+  anti_join(stop_words)%>%
+  count(word, sort=TRUE)
+
+#9th article
+
+LA_times_9 <- LA_times_9[19:57, ]
+
+LA_times_9$LA_times_9 <- as.character(LA_times_9$LA_times_9)
+
+LA_times_9 <- LA_times_9 %>%
+  unnest_tokens(word, LA_times_9)%>%
+  anti_join(stop_words)%>%
+  count(word, sort=TRUE)
+
+#10th article
+
+LA_times_10 <- LA_times_10[18:29, ]
+
+LA_times_10$LA_times_10 <- as.character(LA_times_10$LA_times_10)
+
+LA_times_10 <- LA_times_10 %>%
+  unnest_tokens(word, LA_times_10)%>%
+  anti_join(stop_words)%>%
+  count(word, sort=TRUE)
+```
+
+Ok, now that we have our word frequencies let's do some analysis. We will compare the ten articles using sentiment analysis to see if the generally align or not. 
+
+```{r}
+#helps with the sentiment analysis, using package "textdata"
+  
+get_sentiments('afinn')# we see a list of words and there classification, 2,467 - not really that many overall. 
+
+get_sentiments('nrc')# looks like a good amount more 13,891, but as we can see words are classified in several different categories. 
+
+get_sentiments('bing')# looks like a good amount more 6,776, but as we can see just negative and positive. 
+
+LA_Times_1_sentiment_affin <- LA_times_1 %>%
+  inner_join(get_sentiments("afinn"))#using a inner join to match words and add the sentiment variable
+
+LA_Times_1_sentiment_nrc <- LA_times_1 %>%
+  inner_join(get_sentiments("nrc"))
+
+LA_Times_1_sentiment_bing <- LA_times_1 %>%
+  inner_join(get_sentiments("bing"))
+
+View(LA_Times_1_sentiment_affin)
+View(LA_Times_1_sentiment_nrc)
+View(LA_Times_1_sentiment_bing)
+
+#Walk through the same process with Article 2
+
+LA_Times_2_sentiment_affin <- LA_times_2 %>%
+  inner_join(get_sentiments("afinn"))#using a inner join to match words and add the sentiment variable
+
+LA_Times_2_sentiment_nrc <- LA_times_2 %>%
+  inner_join(get_sentiments("nrc"))
+
+LA_Times_2_sentiment_bing <- LA_times_2 %>%
+  inner_join(get_sentiments("bing"))
+
+View(LA_Times_2_sentiment_affin)
+View(LA_Times_2_sentiment_nrc)
+View(LA_Times_2_sentiment_bing)
+
+#Walk through the same process with Article 3
+
+LA_Times_3_sentiment_affin <- LA_times_3 %>%
+  inner_join(get_sentiments("afinn"))#using a inner join to match words and add the sentiment variable
+
+LA_Times_3_sentiment_nrc <- LA_times_3 %>%
+  inner_join(get_sentiments("nrc"))
+
+LA_Times_3_sentiment_bing <- LA_times_3 %>%
+  inner_join(get_sentiments("bing"))
+
+View(LA_Times_3_sentiment_affin)
+View(LA_Times_3_sentiment_nrc)
+View(LA_Times_3_sentiment_bing)
+
+#Walk through the same process with Article 4
+
+LA_Times_4_sentiment_affin <- LA_times_4 %>%
+  inner_join(get_sentiments("afinn"))#using a inner join to match words and add the sentiment variable
+
+LA_Times_4_sentiment_nrc <- LA_times_4 %>%
+  inner_join(get_sentiments("nrc"))
+
+LA_Times_4_sentiment_bing <- LA_times_4 %>%
+  inner_join(get_sentiments("bing"))
+
+View(LA_Times_4_sentiment_affin)
+View(LA_Times_4_sentiment_nrc)
+View(LA_Times_4_sentiment_bing)
+
+#Walk through the same process with Article 5
+
+LA_Times_5_sentiment_affin <- LA_times_5 %>%
+  inner_join(get_sentiments("afinn"))#using a inner join to match words and add the sentiment variable
+
+LA_Times_5_sentiment_nrc <- LA_times_5 %>%
+  inner_join(get_sentiments("nrc"))
+
+LA_Times_5_sentiment_bing <- LA_times_5 %>%
+  inner_join(get_sentiments("bing"))
+
+View(LA_Times_5_sentiment_affin)
+View(LA_Times_5_sentiment_nrc)
+View(LA_Times_5_sentiment_bing)
+
+#Walk through the same process with Article 6
+
+LA_Times_6_sentiment_affin <- LA_times_6 %>%
+  inner_join(get_sentiments("afinn"))#using a inner join to match words and add the sentiment variable
+
+LA_Times_6_sentiment_nrc <- LA_times_6 %>%
+  inner_join(get_sentiments("nrc"))
+
+LA_Times_6_sentiment_bing <- LA_times_6 %>%
+  inner_join(get_sentiments("bing"))
+
+View(LA_Times_6_sentiment_affin)
+View(LA_Times_6_sentiment_nrc)
+View(LA_Times_6_sentiment_bing)
+
+#Walk through the same process with Article 7
+
+LA_Times_7_sentiment_affin <- LA_times_7 %>%
+  inner_join(get_sentiments("afinn"))#using a inner join to match words and add the sentiment variable
+
+LA_Times_7_sentiment_nrc <- LA_times_7 %>%
+  inner_join(get_sentiments("nrc"))
+
+LA_Times_7_sentiment_bing <- LA_times_7 %>%
+  inner_join(get_sentiments("bing"))
+
+View(LA_Times_7_sentiment_affin)
+View(LA_Times_7_sentiment_nrc)
+View(LA_Times_7_sentiment_bing)
+
+#Walk through the same process with Article 8
+
+LA_Times_8_sentiment_affin <- LA_times_8 %>%
+  inner_join(get_sentiments("afinn"))#using a inner join to match words and add the sentiment variable
+
+LA_Times_8_sentiment_nrc <- LA_times_8 %>%
+  inner_join(get_sentiments("nrc"))
+
+LA_Times_8_sentiment_bing <- LA_times_8 %>%
+  inner_join(get_sentiments("bing"))
+
+View(LA_Times_8_sentiment_affin)
+View(LA_Times_8_sentiment_nrc)
+View(LA_Times_8_sentiment_bing)
+
+#Walk through the same process with Article 9
+LA_Times_9_sentiment_affin <- LA_times_9 %>%
+  inner_join(get_sentiments("afinn"))#using a inner join to match words and add the sentiment variable
+
+LA_Times_9_sentiment_nrc <- LA_times_9 %>%
+  inner_join(get_sentiments("nrc"))
+
+LA_Times_9_sentiment_bing <- LA_times_9 %>%
+  inner_join(get_sentiments("bing"))
+
+View(LA_Times_9_sentiment_affin)
+View(LA_Times_9_sentiment_nrc)
+View(LA_Times_9_sentiment_bing)
+
+#Walk through the same process with Article 10
+
+LA_Times_10_sentiment_affin <- LA_times_10 %>%
+  inner_join(get_sentiments("afinn"))#using a inner join to match words and add the sentiment variable
+
+LA_Times_10_sentiment_nrc <- LA_times_10 %>%
+  inner_join(get_sentiments("nrc"))
+
+LA_Times_10_sentiment_bing <- LA_times_10 %>%
+  inner_join(get_sentiments("bing"))
+
+View(LA_Times_10_sentiment_affin)
+View(LA_Times_10_sentiment_nrc)
+View(LA_Times_10_sentiment_bing)
+```
+
+Now that we have our sentiment let's do some quick comparisons
+
+```{r}
+#We can just do some tabling to see the differences in bing and nrc, seems like Kennedy's speech at least first glanced was much more balanced in terms of negative/positive sentiment
+table(LA_Times_1_sentiment_bing$sentiment)
+table(LA_Times_2_sentiment_bing$sentiment)
+table(LA_Times_3_sentiment_bing$sentiment)
+table(LA_Times_4_sentiment_bing$sentiment)
+table(LA_Times_5_sentiment_bing$sentiment)
+table(LA_Times_6_sentiment_bing$sentiment)
+table(LA_Times_7_sentiment_bing$sentiment)
+table(LA_Times_8_sentiment_bing$sentiment)
+table(LA_Times_9_sentiment_bing$sentiment)
+table(LA_Times_10_sentiment_bing$sentiment)
+
+table(LA_Times_1_sentiment_nrc$sentiment)
+table(LA_Times_2_sentiment_nrc$sentiment)
+table(LA_Times_3_sentiment_nrc$sentiment)
+table(LA_Times_4_sentiment_nrc$sentiment)
+table(LA_Times_5_sentiment_nrc$sentiment)
+table(LA_Times_6_sentiment_nrc$sentiment)
+table(LA_Times_7_sentiment_nrc$sentiment)
+table(LA_Times_8_sentiment_nrc$sentiment)
+table(LA_Times_9_sentiment_nrc$sentiment)
+table(LA_Times_10_sentiment_nrc$sentiment)
+
+ggplot(data = LA_Times_1_sentiment_affin, 
+       aes(x=value)
+        )+
+  geom_histogram()+
+  ggtitle("LA_Times_1 Sentiment Range")+
+  theme_minimal()
+
+ggplot(data = LA_Times_2_sentiment_affin, 
+       aes(x=value)
+        )+
+  geom_histogram()+
+  ggtitle("LA_Times_2 Sentiment Range")+
+  theme_minimal()
+
+ggplot(data = LA_Times_3_sentiment_affin, 
+       aes(x=value)
+        )+
+  geom_histogram()+
+  ggtitle("LA_Times_3 Sentiment Range")+
+  theme_minimal()
+
+ggplot(data = LA_Times_4_sentiment_affin, 
+       aes(x=value)
+        )+
+  geom_histogram()+
+  ggtitle("LA_Times_4 Sentiment Range")+
+  theme_minimal()
+
+ggplot(data = LA_Times_5_sentiment_affin, 
+       aes(x=value)
+        )+
+  geom_histogram()+
+  ggtitle("LA_Times_5 Sentiment Range")+
+  theme_minimal()
+
+ggplot(data = LA_Times_6_sentiment_affin, 
+       aes(x=value)
+        )+
+  geom_histogram()+
+  ggtitle("LA_Times_6 Sentiment Range")+
+  theme_minimal()
+
+ggplot(data = LA_Times_7_sentiment_affin, 
+       aes(x=value)
+        )+
+  geom_histogram()+
+  ggtitle("LA_Times_7 Sentiment Range")+
+  theme_minimal()
+
+ggplot(data = LA_Times_8_sentiment_affin, 
+       aes(x=value)
+        )+
+  geom_histogram()+
+  ggtitle("LA_Times_8 Sentiment Range")+
+  theme_minimal()
+
+ggplot(data = LA_Times_9_sentiment_affin, 
+       aes(x=value)
+        )+
+  geom_histogram()+
+  ggtitle("LA_Times_9 Sentiment Range")+
+  theme_minimal()
+
+ggplot(data = LA_Times_10_sentiment_affin, 
+       aes(x=value)
+        )+
+  geom_histogram()+
+  ggtitle("LA_Times_10 Sentiment Range")+
+  theme_minimal()
+
+#combining the sentiment_affin for each article to make a histogram for the LA Times Newspaper 
+
+newspaper_words_sentiment <- newspaper_words %>%
+  inner_join(get_sentiments("afinn"))
+  
+ggplot(data = newspaper_words_sentiment, 
+       aes(x=value)
+        )+
+  geom_histogram()+
+  ggtitle("LA Times Sentiment Range")+
+  theme_minimal()
+
+#Again they look very different, which leads to all kinds of interesting questions around the current state of affairs at the time these speeches were given and enforces the idea that text needs to be analyzed in the context of when it was written.....Hermeneutics! I would reference this debate between Nixon and Kennedy to get a basic idea of the events being confronted at this time. 
+
+#https://www.jfklibrary.org/asset-viewer/archives/TNC/TNC-172/TNC-172
+
+#Could also do simple word clouds as we see, Trump is much more focused on the US whereas Kennedy references the "World" at a higher rate. 
+
+#below uses the ggwordcloud package
+
+set.seed(42)
+ggplot(LA_times_1[1:50,], aes(label = word, size = n)
+       ) +
+  geom_text_wordcloud() +
+  theme_minimal()
+
+ggplot(LA_times_2[1:50,], aes(label = word, size = n)
+       ) +
+  geom_text_wordcloud() +
+  theme_minimal()
+
+ggplot(LA_times_3[1:50,], aes(label = word, size = n)
+       ) +
+  geom_text_wordcloud() +
+  theme_minimal()
+
+ggplot(LA_times_4[1:50,], aes(label = word, size = n)
+       ) +
+  geom_text_wordcloud() +
+  theme_minimal()
+
+ggplot(LA_times_5[1:50,], aes(label = word, size = n)
+       ) +
+  geom_text_wordcloud() +
+  theme_minimal()
+
+ggplot(LA_times_6[1:50,], aes(label = word, size = n)
+       ) +
+  geom_text_wordcloud() +
+  theme_minimal()
+
+ggplot(LA_times_7[1:50,], aes(label = word, size = n)
+       ) +
+  geom_text_wordcloud() +
+  theme_minimal()
+
+ggplot(LA_times_8[1:50,], aes(label = word, size = n)
+       ) +
+  geom_text_wordcloud() +
+  theme_minimal()
+
+ggplot(LA_times_9[1:50,], aes(label = word, size = n)
+       ) +
+  geom_text_wordcloud() +
+  theme_minimal()
+
+ggplot(LA_times_10[1:50,], aes(label = word, size = n)
+       ) +
+  geom_text_wordcloud() +
+  theme_minimal()
+
+#Combined LA times word cloud 
+
+ggplot(newspaper_words[1:50,], aes(label = word, size = n)
+       ) +
+  geom_text_wordcloud() +
+  theme_minimal()
+
+```
+
+term frequency - inverse document frequency tf-idf. Here we are going to treat
+each of our speeches as a document in a corpus and explore the relative 
+importance of words to these speeches as compared to the overall corpus. 
+```{r}
+#need to the raw data again
+
+LA_times_1 <- read_rtf("C:/Users/natha/OneDrive/Documents/DS-3001/My Projects/Text Mining/CALIFORNIA DROUGHT_ The driest year in a century_ Excep.RTF")
+LA_times_1 = tibble(LA_times_1)
+LA_times_1 <- LA_times_1[19:43, ]
+LA_times_1$LA_times_1 <- as.character(LA_times_1$LA_times_1)
+
+LA_times_2 <- read_rtf("C:/Users/natha/OneDrive/Documents/DS-3001/My Projects/Text Mining/PERSPECTIVES_ LETTER FROM WASHINGTON_ There_s still hop.RTF")
+LA_times_2 = tibble(LA_times_2)
+LA_times_2 <- LA_times_2[19:42, ]
+LA_times_2$LA_times_2 <- as.character(LA_times_2$LA_times_2)
+
+LA_times_3 <- read_rtf("C:/Users/natha/OneDrive/Documents/DS-3001/My Projects/Text Mining/Hope isn_t a climate-change option -- but activism is (1).RTF")
+LA_times_3 = tibble(LA_times_3)
+LA_times_3 <- LA_times_3[19:31, ]
+LA_times_3$LA_times_3 <- as.character(LA_times_3$LA_times_3)
+
+LA_times_4 <- read_rtf("C:/Users/natha/OneDrive/Documents/DS-3001/My Projects/Text Mining/Fan of national parks_ Get ready for them to heat up_ C.RTF")
+LA_times_4 = tibble(LA_times_4)
+LA_times_4 <- LA_times_4[19:44, ]
+LA_times_4$LA_times_4 <- as.character(LA_times_4$LA_times_4)
+
+LA_times_5 <- read_rtf("C:/Users/natha/OneDrive/Documents/DS-3001/My Projects/Text Mining/Second Opinion __ BIG IDEAS ON GLOBAL CHALLENGES_ The m.RTF")
+LA_times_5 = tibble(LA_times_5)
+LA_times_5 <- LA_times_5[19:35, ]
+LA_times_5$LA_times_5 <- as.character(LA_times_5$LA_times_5)
+
+LA_times_6 <- read_rtf("C:/Users/natha/OneDrive/Documents/DS-3001/My Projects/Text Mining/PERSPECTIVES_ Firms told to come clean on climate change.RTF")
+LA_times_6 = tibble(LA_times_6)
+LA_times_6 <- LA_times_6[19:44, ]
+LA_times_6$LA_times_6 <- as.character(LA_times_6$LA_times_6)
+
+LA_times_7 <- read_rtf("C:/Users/natha/OneDrive/Documents/DS-3001/My Projects/Text Mining/Biden pushes climate legislation_ Wrapping up his trip.RTF")
+LA_times_7 = tibble(LA_times_7)
+LA_times_7 <- LA_times_7[20:35, ]
+LA_times_7$LA_times_7 <- as.character(LA_times_7$LA_times_7)
+
+LA_times_8 <- read_rtf("C:/Users/natha/OneDrive/Documents/DS-3001/My Projects/Text Mining/PERSPECTIVES_ The dry facts on the drought in the Weste.RTF")
+LA_times_8 = tibble(LA_times_8)
+LA_times_8 <- LA_times_8[19:66, ]
+LA_times_8$LA_times_8 <- as.character(LA_times_8$LA_times_8)
+
+LA_times_9 <- read_rtf("C:/Users/natha/OneDrive/Documents/DS-3001/My Projects/Text Mining/Brutal fire season is still _far from over__ Dryness_ h.RTF")
+LA_times_9 = tibble(LA_times_9)
+LA_times_9 <- LA_times_9[19:57, ]
+LA_times_9$LA_times_9 <- as.character(LA_times_9$LA_times_9)
+
+LA_times_10 <- read_rtf("C:/Users/natha/OneDrive/Documents/DS-3001/My Projects/Text Mining/The Pacific Northwest melts.RTF")
+LA_times_10 = tibble(LA_times_10)
+LA_times_10 <- LA_times_10[18:29, ]
+LA_times_10$LA_times_10 <- as.character(LA_times_10$LA_times_10)
+
+#Corpus is all the articles, documents are each of the articles, and token is the words 
+
+data_prep <- function(x,y,z){
+  i <- as_tibble(t(x))
+  ii <- unite(i,"text",y:z,remove = TRUE,sep = "")
+}
+
+LA_times_1_bag <- data_prep(LA_times_1,'V1','V25')
+
+LA_times_2_bag <- data_prep(LA_times_2,'V1','V24')
+
+LA_times_3_bag <- data_prep(LA_times_3,'V1','V13')
+
+LA_times_4_bag <- data_prep(LA_times_4,'V1','V26')
+
+LA_times_5_bag <- data_prep(LA_times_5,'V1','V17')
+
+LA_times_6_bag <- data_prep(LA_times_6,'V1','V26')
+
+LA_times_7_bag <- data_prep(LA_times_7,'V1','V16')
+
+LA_times_8_bag <- data_prep(LA_times_8,'V1','V48')
+
+LA_times_9_bag <- data_prep(LA_times_9,'V1','V39')
+
+LA_times_10_bag <- data_prep(LA_times_10,'V1','V12')
+
+articles <- c("LATimes1","LATimes2","LATimes3","LATimes4","LATimes5","LATimes6","LATimes7","LATimes8","LATimes9","LATimes10")
+
+tf_idf_newspaper <- tibble(articles,text=t(tibble(LA_times_1_bag,LA_times_2_bag,LA_times_3_bag,LA_times_4_bag,LA_times_5_bag,LA_times_6_bag,LA_times_7_bag,LA_times_8_bag,LA_times_9_bag,LA_times_10_bag,.name_repair = "universal")))
+
+View(tf_idf_newspaper)
+
+word_count <- tf_idf_newspaper %>%
+  unnest_tokens(word, text) %>%
+  count(articles, word, sort = TRUE)
+
+total_words <- word_count %>% 
+  group_by(articles) %>% 
+  summarize(total = sum(n))
+
+newspaper_words <- left_join(word_count, total_words)
+
+newspaper_words <- newspaper_words %>%
+  anti_join(stop_words)%>%
+  bind_tf_idf(word, articles, n)
+
+view(newspaper_words)
+
+write.csv(newspaper_words,"C:/Users/natha/OneDrive/Documents/DS-3001/My Projects/Text Mining/west.csv")
+
+#The tf_idf shows which words are most important in the articles (higher values of tf_idf indicate that they are more important)
+
+#tf_idf = tf*idf
+
+#Individual Analysis of Los Angeles Times
+  
+```
