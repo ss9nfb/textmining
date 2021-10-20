@@ -43,6 +43,45 @@ S <- read_csv("/Users/rachael/Documents/School/Fall 2021/DS 3001/Lab7/textmining
 
 #### Northeast : NY Times
 
+```{r, echo = T}
+NE[order(NE$tf_idf, decreasing = T, na.last = F),]
+```
+
+The highest tf-idf value is found to be in article 9 and the word prize. This correlates with the positive sentiment values found above in the Northeast. The word "prize" may be associated with new and novel ideas, technology, and legislation to combat the growing problem of climate change. This demonstrates that the Northeast is ahead in the change that climate change commands. In addition, another important word to consider is "city", "capital", "private", and "virginia", which are all locations and should not necessarily have any sentiment awarded to them. However, it could be that "capital" and "private" could be interpreded in regards to money and may have a positive association. It is crucial to understand the context in which the articles are talking about.
+
+```{r, include = F}
+sentiment_affin_all <- NE %>%
+  inner_join(get_sentiments("afinn")) # using a inner join to match words and add the sentiment variable
+sentiment_nrc_all <- NE %>%
+  inner_join(get_sentiments("nrc"))
+sentiment_bing_all <- NE %>%
+  inner_join(get_sentiments("bing"))
+```
+```{r, echo = T}
+table(sentiment_bing_all$sentiment)
+table(sentiment_nrc_all$sentiment)
+```
+```{r, echo = T}
+ggplot(data = sentiment_affin_all, 
+       aes(x=value)
+        )+
+  geom_histogram()+
+  ggtitle("All Articles Sentiment Range")+
+  theme_minimal()
+```
+The sentiments of the combined articles can be seen above. The articles seemed to have generally a higher number of positive words included, though not by much. In addition, the general sentiment seemed to be more associated with trust rather than any negative connotations. This could be due to the general understanding that climate change is a real and scary issue in the Northeast. However, that could also be from articles trying to persuade readers to believe what they are saying about the climate and that it is necessary to act now. Because New York Times originates from New York city a global hub of tech, finance, and art, there is a lot of global news that may be written. For example, the positive connotations from the words could be related to the news outlet talking about the strides other countries have taken. In addition, although New York has a lot of CO2 emissions, the rest of the Northeast tends to not be constructed of very large metropolitan areas and is fairly liberal. Thus, the positive sentiment in the articles could be a result of change in legislation happening. 
+
+The top words in the Northeast region can be seen below in the cloud graph and the table. 
+
+```{r, echo = T}
+article_words_nostop <- NE %>% distinct(word, .keep_all = TRUE) %>% anti_join(stop_words)
+set.seed(42)
+ggplot(article_words_nostop[1:200,], aes(label = word, size = n)
+       ) +
+  geom_text_wordcloud() +
+  theme_minimal()
+```
+As seen in the graph and the table, the most common words found in all the articles were "climate" and "change", which is completely reasonable as the focus of each was climate change. However, other common words include "dr", "prize", "nations", all of which have generally positive sentiments. This corresponds to the analysis done above. Although all of the words generally have positive connotations, it is important to understand the context behind each article and see how each word is being used in the articles entirety. For example, "dr" could just be referencing the titles of people, but could be considered a positive word. In addition, "prize" could be referencing that an individual won an award when introducing their opinion in an article, and not that there is a prize pertaining to the benefit of combating climate change.
 
 #### Midwest : Chicago Daily Herald
 
