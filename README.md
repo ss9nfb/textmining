@@ -1,4 +1,4 @@
-# textmining
+# Textmining
 
 Midwest: Sarah
 
