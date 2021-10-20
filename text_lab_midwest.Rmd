@@ -322,11 +322,21 @@ newspaper_words <- newspaper_words %>%
 newspaper_words_new <- newspaper_words %>%
   distinct(word, .keep_all=TRUE) %>%
   anti_join(stop_words)
-newspaper_words_new
 
 write.csv(newspaper_words_new, "/Users/sarah/Documents/UVA/DS 3001/midwest.csv", row.names=FALSE)
 
 ```
+
+/--------------------
+
+To provide insight into individual word importance per article, a TF-IDF analysis is created. Each article is denoted by "c#" where "#" is the particular article number it represents. From this analysis, I am able to have the ability to see the term frequency (TF) relative to the Chicago Daily Herald as a whole, and the inverse document frequency (IDF) to understand how much that specific term is present in that particular article. Sorted from highest to lowest, the tf-idf represents the most critical word to that particular article in the scheme of the Chicago Daily Herald (Corpus).
+
+```{r}
+newspaper_words_new[order(newspaper_words_new$tf_idf, decreasing=T, na.last=F),]
+```
+The highest tf-idf value from the output is the word "lakes" from the 8th analyzed article, or "c8", which describes the relation between climate change the rising of the Great Lakes. This demonstrates that "lakes" is important on a local level to the article and also in terms of all the articles accumulated together. Similarly, the second highest tf-idf value is "birds" from the 1st analyzed article, or "c1," which is an article describing the endangerment of bird habits from the impacts of climate change. Once again, the word "birds" is rightfully important most specifically to that article when compared to all the other articles as a whole. From this analysis, it is important to understand the frequency of words as they appear in individual articles and understand how that relates to the comparison between the variance in word frequencies across all documents.
+
+/--------------------
 
 ```{r, include=FALSE}
 # Sentiment Analysis of Combined Dataset
