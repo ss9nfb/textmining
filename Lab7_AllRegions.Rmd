@@ -1,0 +1,33 @@
+---
+title: "Lab7_All_Regions"
+author: "Rachael Cooper"
+date: "10/20/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r, include = F}
+NE <- read_csv("/Users/rachael/Documents/School/Fall 2021/DS 3001/Lab7/textmining-main/article_words_NE.csv")
+MW <- read_csv("/Users/rachael/Documents/School/Fall 2021/DS 3001/Lab7/textmining-main/midwest.csv")
+W <- read_csv("/Users/rachael/Documents/School/Fall 2021/DS 3001/Lab7/textmining-main/west.csv")
+S <- read_csv("/Users/rachael/Documents/School/Fall 2021/DS 3001/Lab7/textmining-main/south_words.csv")
+```
+
+### Climate Change by Region Analysis
+
+#### Northeast : NY Times
+
+
+#### Midwest : Chicago Daily Herald
+
+
+#### West : LA Times
+
+
+#### South : Richmond Times Dispatch
+
+
+
