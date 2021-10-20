@@ -13,3 +13,9 @@ South: Samarth
     * data: south_words.csv
     * Individual Html: south_region.html
     * Individual Rmd: south_region.Rmd
+
+West: Nathan
+
+    * data: west.csv
+    * Individual Html: west_region.html
+    * Individual Rmd: Text_Mining_Lab_West.Rmd
