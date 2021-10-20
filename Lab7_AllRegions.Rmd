@@ -8,6 +8,29 @@ output: html_document
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
+```{r, include=FALSE}
+library(tidyverse)
+#install.packages("tidytext")
+library(tidytext)
+#install.packages("ggwordcloud")
+library(ggwordcloud)
+# install.packages("gutenbergr") 
+library(gutenbergr)
+#install.packages('textdata')
+library(textdata)
+```
+/--------------------
+
+*General Procedure*
+
+1. Load data and necessary packages
+2. Read in each article (total of 10-12), clean the data and do individual sentiment analysis and produce word clouds
+3. Merge the article data together and do sentiment analysis of the entirety of the Chicago Daily Herald
+4. Conduct TF-IDF analysis
+5. Produce and analyze a sentiment range graph
+6. Produce and analyze a word cloud, highlighting the top 50 represented words
+
+/--------------------
 
 ```{r, include = F}
 NE <- read_csv("/Users/rachael/Documents/School/Fall 2021/DS 3001/Lab7/textmining-main/article_words_NE.csv")
@@ -23,6 +46,82 @@ S <- read_csv("/Users/rachael/Documents/School/Fall 2021/DS 3001/Lab7/textmining
 
 #### Midwest : Chicago Daily Herald
 
+To provide insight into individual word importance per article, a TF-IDF analysis is created. Each article is denoted by "c#" where "#" is the particular article number it represents. From this analysis, I am able to have the ability to see the term frequency (TF) relative to the Chicago Daily Herald as a whole, and the inverse document frequency (IDF) to understand how much that specific term is present in that particular article. Sorted from highest to lowest, the tf-idf represents the most critical word to that particular article in the scheme of the Chicago Daily Herald (Corpus).
+
+```{r}
+MW[order(MW$tf_idf, decreasing=T, na.last=F),]
+```
+The highest tf-idf value from the output is the word "lakes" from the 8th analyzed article, or "c8", which describes the relation between climate change the rising of the Great Lakes. This demonstrates that "lakes" is important on a local level to the article and also in terms of all the articles accumulated together. Similarly, the second highest tf-idf value is "birds" from the 1st analyzed article, or "c1," which is an article describing the endangerment of bird habits from the impacts of climate change. Once again, the word "birds" is rightfully important most specifically to that article when compared to all the other articles as a whole. From this analysis, it is important to understand the frequency of words as they appear in individual articles and understand how that relates to the comparison between the variance in word frequencies across all documents.
+
+/--------------------
+
+```{r, include=FALSE}
+# Sentiment Analysis of Combined Dataset
+
+get_sentiments('afinn')
+get_sentiments('nrc')
+get_sentiments('bing')
+
+# ------------------------
+
+c_sentiment_affin <- MW %>%
+  inner_join(get_sentiments("afinn")) %>% # using a inner join to match words and add the sentiment variable
+  anti_join(stop_words)
+
+c_sentiment_nrc <- MW %>%
+  inner_join(get_sentiments("nrc"))
+
+c_sentiment_bing <- MW %>%
+  inner_join(get_sentiments("bing"))
+
+```
+
+```{r}
+# Table format of the categorized words
+table(c_sentiment_nrc$sentiment)
+```
+
+In terms of the articles as a whole and the "nrc" sentiment, there is a mostly even representation of both positive and negative words. There is a slight increase in the number of positive words, with the majority of which being classified under "trust." Relating to the topic being analyzed, climate change is a rather neutral topic that aims to bring attention to climate change awareness. In the Midwest region, the negative impact of climate change isn't as evident compared to other regions experiencing forest fires or droughts from global warming; therefore, the limited variance between the number of negative and positive is expected.
+
+/--------------------
+
+```{r, message=FALSE}
+# Plot the sentiment range w/o stop words
+ggplot(data = c_sentiment_affin, 
+       aes(x=value)
+        )+
+  geom_histogram()+
+  ggtitle("Chicago Daily Herald Sentiment Range")+
+  theme_minimal()
+```
+
+
+In opposition to the "nrc" sentiment analysis, the "affin" sentiment analysis indicated a slighlty larger representation of negative words than positive words. The positive words are more evenly spread out among the various levels of positivity (0-3), whereas the negative words have a higher representation of the "-2" level of negativity. This can be related to the more moderate negative words that are referenced to climate change. Similarly, the positive words use more moderate references and are not overly positive comparatively. The reasoning for this can be reiterated from the section above where climate change, in terms of the Midwest, is relatively more of a neutral topic and therefore does not include either overly negative or overly positive words.
+
+/--------------------
+
+```{r}
+# Make a word cloud w/o stop words
+set.seed(42)
+ggplot(MW[1:50,], aes(label = word, size = n)
+       ) +
+  geom_text_wordcloud() +
+  theme_minimal()
+```
+
+Indicated in the word cloud, the top represented words are typical of climate change topics, specifically: climate, change, global, warming, heat. However, the words specific to the Midwest would include: lakes, water, Chicago, birds. These words are related to the area distinctive to the Midwest, such as the Great Lakes. This word cloud is visually as expected, with the inclusion of more general climate change words but also the inclusion of Midwest-specific terms.
+In the table outputted below, it includes the top 25 words, sorted from most significant to least significant.
+
+<br/>
+
+```{r}
+# Top 25 words in the Midwest
+top_25 <- MW[1:25,2] %>%
+  rename(midwest.top25=word)
+head(top_25)
+```
+
+/--------------------
 
 #### West : LA Times
 
