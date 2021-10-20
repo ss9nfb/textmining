@@ -1,0 +1,380 @@
+---
+title: "text_lab_midwest"
+author: "Sarah Gould"
+date: "10/19/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+Congratulations you've successfully transferred from being a NBA 'quant' scout to a consultant specializing in US national sentiment! You've been hired by a non-profit in secret to track the level of support nationally and regionally for the Climate Change issues. The goal is to get a general idea of patterns associated with articles being written on the broad topic of Climate Change (you can also choose to select a sub-topic). In doing so your data science team has decided to explore periodicals from around the country in a effort to track the relative positive or negative sentiment and word frequencies. Luckily you have access to a world class library search engine call LexusNexus (NexusUni) that provides access to newspapers from around the country dating back decades. You'll first need to decided what words you want to track and what time might be interesting to begin your search. 
+
+You'll need to select several newspapers from different regions in the country limiting the search to 100 articles from each paper, run sentiment analysis with each newspaper serving as a corpus and then compare the level of positive or negative connotation associated with the outcomes. Also, work through tf-idf on each corpus (newspapers) and compare the differences between the distributions (5 to 6 newspapers should be fine)
+
+Your main goal (and the goal of all practicing data scientists!) is to translate this information into action. What patterns do you see, why do you believe this to be the case? What additional information might you want? Be as specific as possible, but keep in mind this is an initial exploratory effort...more analysis might be needed...but the result can and should advise the next steps you present to the firm. 
+
+
+Please submit a cleanly knitted HTML file describing in detail the steps you 
+took along the way, the results of your analysis and most importantly the implications/next steps you would recommend.  You will report your final 
+results and recommendations next week in class. This will be 5 minutes per group. 
+
+You will need also need to try to collaborate within your group via a GitHub repo, if you choose it would be fine to assign 1 or 2 regions/newspapers per group member, that can then be added to the repo individually. Create a main repo, everyone should work in this repo and submit independently using forking/pull requests. Select a repo owner that sets up access (read access) for the week, we will rotate owners next week. 
+Also, submit a link to your the GitHub repo (every group member can submit the same link). 
+
+
+Rstudio Guidance on Git and Github (Including Branching/Pull Requests): https://r-pkgs.org/git.html#git-branch
+
+
+Here is the link to the database search via the UVA Library that should lead you to LexusNexus (Now Nexas Uni)
+https://guides.lib.virginia.edu/az.php?a=l
+
+
+```{r}
+library(tidyverse)
+#install.packages("tidytext")
+library(tidytext)
+#install.packages("ggwordcloud")
+library(ggwordcloud)
+# install.packages("gutenbergr") 
+library(gutenbergr)
+#install.packages('textdata')
+library(textdata)
+```
+
+```{r}
+
+# clean the data
+clean_data <- function(dataSet, colName) {
+  new_data <- dataSet %>%
+    unnest_tokens(word, colName) %>%
+    anti_join(stop_words) %>%
+    count(word, sort=TRUE)
+}
+
+# create the sentiment ggplot
+sent_ana <- function(dataSet, title) {
+  sentiment_affin <- inner_join(dataSet,get_sentiments("afinn"))
+  
+  ggplot(data = sentiment_affin, 
+       aes(x=value)
+        )+
+  geom_histogram()+
+  ggtitle(title)+
+  theme_minimal()
+}
+
+# create the wordcloud
+word_cloud <- function(dataSet) {
+  # word cloud
+  set.seed(42)
+  ggplot(dataSet[1:50,], aes(label = word, size = n)
+       ) +
+  geom_text_wordcloud() +
+  theme_minimal()
+}
+```
+
+
+
+```{r, message=FALSE}
+# 1st Article -- Download and Clean
+c_1 <- read_lines("Climate change endangers bird habitats_ then birds.txt")
+c_1 <- tibble(c_1)
+c_1 <-c_1[1:23,]
+
+c_1$c_1 <- as.character(c_1$c_1)
+c_1 <- clean_data(c_1, "c_1")
+c_1 <- subset(c_1, !grepl("[0-9]", word))
+
+# ------------------------
+
+sent_ana(c_1, "Climate change endangers bird habitats_ then birds.txt")
+word_cloud(c_1)
+
+```
+
+```{r, message=FALSE}
+# 2nd Article -- Download and Clean
+c_2 <- read_lines("Climate change has affected 85_ worldwide_ study says.txt")
+c_2 <- tibble(c_2)
+c_2 <-c_2[1:2,]
+
+c_2$c_2 <- as.character(c_2$c_2)
+c_2 <- clean_data(c_2, "c_2")
+c_2 <- subset(c_2, !grepl("[0-9]", word))
+
+# ------------------------
+
+sent_ana(c_2, "Climate change has affected 85_ worldwide_ study says.txt")
+word_cloud(c_2)
+```
+
+
+```{r, message=FALSE}
+# 3rd Article -- Download and Clean
+c_3 <- read_lines("Climate change is real_ and it requires us to act.txt")
+c_3 <- tibble(c_3)
+c_3 <-c_3[1:2,]
+
+c_3$c_3 <- as.character(c_3$c_3)
+c_3 <- clean_data(c_3, "c_3")
+c_3 <- subset(c_3, !grepl("[0-9]", word))
+
+# ------------------------
+
+sent_ana(c_3, "Climate change is real_ and it requires us to act.txt")
+word_cloud(c_3)
+```
+
+
+```{r, message=FALSE}
+# 4th Article -- Download and Clean
+c_4 <- read_lines("Study blames climate change for 37_ of global heat deat.txt")
+c_4 <- tibble(c_4)
+c_4 <-c_4[1:2,]
+
+c_4$c_4 <- as.character(c_4$c_4)
+c_4 <- clean_data(c_4, "c_4")
+c_4 <- subset(c_4, !grepl("[0-9]", word))
+
+# ------------------------
+
+sent_ana(c_4, "Study blames climate change for 37_ of global heat deat.txt")
+word_cloud(c_4)
+```
+
+
+```{r, message=FALSE}
+# 5th Article -- Download and Clean
+c_5 <- read_lines("Talk with your children about climate change Children_.txt")
+c_5 <- tibble(c_5)
+c_5 <-c_5[1:2,]
+
+c_5$c_5 <- as.character(c_5$c_5)
+c_5 <- clean_data(c_5, "c_5")
+c_5 <- subset(c_5, !grepl("[0-9]", word))
+
+# ------------------------
+
+sent_ana(c_5, "Talk with your children about climate change Children_.txt")
+word_cloud(c_5)
+```
+
+
+```{r, message=FALSE}
+# 6th Article -- Download and Clean
+c_6 <- read_lines("The politics of climate change.txt")
+c_6 <- tibble(c_6)
+c_6 <-c_6[1:2,]
+
+c_6$c_6 <- as.character(c_6$c_6)
+c_6 <- clean_data(c_6, "c_6")
+c_6 <- subset(c_6, !grepl("[0-9]", word))
+
+# ------------------------
+
+sent_ana(c_6, "The politics of climate change.txt")
+word_cloud(c_6)
+```
+
+```{r, message=FALSE}
+# 7th Article -- Download and Clean
+c_7 <- read_lines("What a changing climate means for government.txt")
+c_7 <- tibble(c_7)
+c_7 <-c_7[1:2,]
+
+c_7$c_7 <- as.character(c_7$c_7)
+c_7 <- clean_data(c_7, "c_7")
+c_7 <- subset(c_7, !grepl("[0-9]", word))
+
+# ------------------------
+
+sent_ana(c_7, "The politics of climate change.txt")
+word_cloud(c_7)
+```
+
+```{r, message=FALSE}
+# 8th Article -- Download and Clean
+c_8 <- read_lines("Why are the Great Lakes rising_.txt")
+c_8 <- tibble(c_8)
+c_8 <-c_8[1:2,]
+
+c_8$c_8 <- as.character(c_8$c_8)
+c_8 <- clean_data(c_8, "c_8")
+c_8 <- subset(c_8, !grepl("[0-9]", word))
+
+# ------------------------
+
+sent_ana(c_8, "Why are the Great Lakes rising_.txt")
+word_cloud(c_8)
+```
+
+```{r, message=FALSE}
+# 9th Article -- Download and Clean
+c_9 <- read_lines("World Bank_ Climate change could result in 100 million.txt")
+c_9 <- tibble(c_9)
+c_9 <-c_9[1:16,]
+
+c_9$c_9 <- as.character(c_9$c_9)
+c_9 <- clean_data(c_9, "c_9")
+c_9 <- subset(c_9, !grepl("[0-9]", word))
+
+# ------------------------
+
+sent_ana(c_9, "World Bank_ Climate change could result in 100 million.txt")
+word_cloud(c_9)
+```
+
+```{r, message=FALSE}
+# 10th Article -- Download and Clean
+c_10 <- read_lines("_Americans are waking up__ two-thirds say climate crisi.txt")
+c_10 <- tibble(c_10)
+c_10 <-c_10[1:2,]
+
+c_10$c_10 <- as.character(c_10$c_10)
+c_10 <- clean_data(c_10, "c_10")
+c_10 <- subset(c_10, !grepl("[0-9]", word))
+
+# ------------------------
+
+sent_ana(c_10, "_Americans are waking up__ two-thirds say climate crisi.txt")
+word_cloud(c_10)
+```
+
+
+```{r}
+# Merge all the 10 articles into ONE newspaper dataset
+merge_datasets <- function(df1, df2) {
+  df_combined <- merge(df1, df2, by="word", all.x=T, all.y=T)
+  df_combined <- subset(df_combined, !grepl("[0-9]", word))
+  df_combined$n <- rowSums(df_combined[,c("n.x", "n.y")], na.rm=TRUE)
+  df_combined <- df_combined[, -c(2:3)]
+  return(df_combined)
+}
+
+first_merge <- merge_datasets(c_1, c_2)
+second_merge <- merge_datasets(first_merge, c_3)
+third_merge <- merge_datasets(second_merge, c_4)
+fourth_merge <- merge_datasets(third_merge, c_5)
+fifth_merge <- merge_datasets(fourth_merge, c_6)
+sixth_merge <- merge_datasets(fifth_merge, c_7)
+seventh_merge <- merge_datasets(sixth_merge, c_8)
+eigth_merge <- merge_datasets(seventh_merge, c_9)
+c_combined <- merge_datasets(eigth_merge, c_10)
+
+all_ChicagoDH <- c_combined %>%
+  arrange(desc(n))
+
+head(all_ChicagoDH)
+
+```
+
+
+```{r, message=FALSE}
+# Read the raw text for ALL articles and convert to tibble
+c1 <- as.tibble(read_lines("Climate change endangers bird habitats_ then birds.txt"))
+c2 <- as.tibble(read_lines("Climate change has affected 85_ worldwide_ study says.txt"))
+c3 <- as.tibble(read_lines("Climate change has affected 85_ worldwide_ study says.txt"))
+c4 <- as.tibble(read_lines("Study blames climate change for 37_ of global heat deat.txt"))
+c5 <- as.tibble(read_lines("Talk with your children about climate change Children_.txt"))
+c6 <- as.tibble(read_lines("The politics of climate change.txt"))
+c7 <- as.tibble(read_lines("What a changing climate means for government.txt"))
+c8 <- as.tibble(read_lines("Why are the Great Lakes rising_.txt"))
+c9 <- as.tibble(read_lines("World Bank_ Climate change could result in 100 million.txt"))
+c10 <- as.tibble(read_lines("_Americans are waking up__ two-thirds say climate crisi.txt"))
+
+data_prep <- function(x,y,z){
+  i <- as_tibble(t(x))
+  ii <- unite(i,"text",y:z,remove = TRUE,sep = "")
+}
+
+# Prep all the data for tf-idf analysis
+c1_prep <- data_prep(c1,'V1','V23') 
+  # 'V...' = variable # to variable #
+c2_prep <- data_prep(c2,'V1','V2')
+c3_prep <- data_prep(c3,'V1','V2')
+c4_prep <- data_prep(c4, 'V1', 'V2')
+c5_prep <- data_prep(c5, 'V1', 'V2')
+c6_prep <- data_prep(c6, 'V1', 'V2')
+c7_prep <- data_prep(c7, 'V1', 'V2')
+c8_prep <- data_prep(c8, 'V1', 'V2')
+c9_prep <- data_prep(c9, 'V1', 'V16')
+c10_prep <- data_prep(c10, 'V1', 'V2')
+
+# The specified column names for each article
+chicagoDH <- c("c1","c2","c3", "c4", "c5", "c6", "c7", "c8", "c9", "c10")
+
+tf_idf_text <- tibble(chicagoDH,text=t(tibble(c1_prep,c2_prep,c3_prep,c4_prep,c5_prep, c6_prep, c7_prep, c8_prep, c9_prep, c10_prep,.name_repair = "universal")))  # combine all "tibbles" into one dataset
+
+# Count the individual word count by each article
+word_count <- tf_idf_text %>%
+  unnest_tokens(word, text) %>%
+  count(chicagoDH, word, sort = TRUE)
+
+# Count the total words by each article
+total_words <- word_count %>% 
+  group_by(chicagoDH) %>% 
+  summarize(total = sum(n))
+
+# Create a dataset that combines both the total and word counts
+newspaper_words <- left_join(word_count, total_words)
+newspaper_words
+
+# Calculates the tf-idf for each word
+newspaper_words <- newspaper_words %>%
+  bind_tf_idf(word, chicagoDH, n)
+  # tf-idf is the tf multiplied by idf
+newspaper_words_new <- newspaper_words %>%
+  distinct(word, .keep_all=TRUE) %>%
+  anti_join(stop_words)
+newspaper_words_new
+
+write.csv(newspaper_words_new, "/Users/sarah/Documents/UVA/DS 3001/midwest.csv", row.names=FALSE)
+
+```
+
+```{r, include=FALSE}
+# Sentiment Analysis of Combined Dataset
+
+get_sentiments('afinn')
+get_sentiments('nrc')
+get_sentiments('bing')
+
+# ------------------------
+
+c_sentiment_affin <- newspaper_words_new %>%
+  inner_join(get_sentiments("afinn")) %>% # using a inner join to match words and add the sentiment variable
+  anti_join(stop_words)
+
+c_sentiment_nrc <- newspaper_words_new %>%
+  inner_join(get_sentiments("nrc"))
+
+c_sentiment_bing <- newspaper_words_new %>%
+  inner_join(get_sentiments("bing"))
+
+```
+
+
+
+```{r}
+# Plot the sentiment range w/o stop words
+ggplot(data = c_sentiment_affin, 
+       aes(x=value)
+        )+
+  geom_histogram()+
+  ggtitle("Chicago Daily Herald Sentiment Range")+
+  theme_minimal()
+```
+
+
+```{r}
+# Make a word cloud w/o stop words
+set.seed(42)
+ggplot(newspaper_words_new[1:50,], aes(label = word, size = n)
+       ) +
+  geom_text_wordcloud() +
+  theme_minimal()
+```
+
