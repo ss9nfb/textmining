@@ -1,0 +1,565 @@
+---
+title: "Lab7_solo"
+author: "Rachael Cooper"
+date: "10/18/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r, include=FALSE}
+library(tidyverse)
+#install.packages("tidytext")
+library(tidytext)
+#install.packages("ggwordcloud")
+library(ggwordcloud)
+#worlds largest collection of digitized text
+library(gutenbergr)
+#install.packages('textdata')
+library(textdata)
+library(tm)
+```
+
+### NYTIMES: Northeast
+
+Tasked with running sentiment analysis on several different newspapers in the Northeast, I have scraped together various different articles belonging to the New York Times newspaper. I believe this is a good representation of the Northeast region because New York Times is an established outlet that includes important information of areas outside just the New York state. Once the articles have been found and converted into the simple text files, the articles can be downloaded, piped into a data frame, the words can be tokenized, the stop words can be removed, and the counts of each word can be included in the data frame. 
+The New York Times will serve as the corpus, then the level of positive and negative connotation associated words will be compared. Then, the patterns will be identified, and the next steps the firm can take will be clear.
+
+```{r, include = F}
+
+# Download the Files
+
+article1 <- read_lines("NYTimes1.txt")
+article1 <- tibble(article1)
+article1_raw <- article1
+article1$article1 <- as.character(article1$article1)
+
+article2 <- read_lines("NYTimes2.txt")
+article2 <- tibble(article2)
+article2_raw <- article2
+article2$article2 <- as.character(article2$article2)
+
+article3 <- read_lines("NYTimes3.txt")
+article3 <- tibble(article3)
+article3_raw <- article3
+article3$article3 <- as.character(article3$article3)
+
+article4 <- read_lines("NYTimes4.txt")
+article4 <- tibble(article4)
+article4_raw <- article4
+article4$article4 <- as.character(article4$article4)
+
+article5 <- read_lines("NYTimes5.txt")
+article5 <- tibble(article5)
+article5_raw <- article5
+article5$article5 <- as.character(article5$article5)
+
+article6 <- read_lines("NYTimes6.txt")
+article6 <- tibble(article6)
+article6_raw <- article6
+article6$article6 <- as.character(article6$article6)
+
+article7 <- read_lines("NYTimes7.txt")
+article7 <- tibble(article7)
+article7_raw <- article7
+article7$article7 <- as.character(article7$article7)
+
+article8 <- read_lines("NYTimes8.txt")
+article8 <- tibble(article8)
+article8_raw <- article8
+article8$article8 <- as.character(article8$article8)
+
+article9 <- read_lines("NYTimes9.txt")
+article9 <- tibble(article9)
+article9_raw <- article9
+article9$article9 <- as.character(article9$article9)
+
+article10 <- read_lines("NYTimes10.txt")
+article10 <- tibble(article10)
+article10_raw <- article10
+article10$article10 <- as.character(article10$article10)
+
+article11 <- read_lines("NYTimes11.txt")
+article11 <- tibble(article11)
+article11_raw <- article11
+article11$article11 <- as.character(article11$article11)
+
+article12 <- read_lines("NYTimes12.txt")
+article12 <- tibble(article12)
+article12_raw <- article12
+article12$article12 <- as.character(article12$article12)
+
+```
+
+```{r, include = F}
+
+# Pipe, Tokenize, Antijoin, & Count
+
+article1 <- article1 %>%
+  unnest_tokens(word, article1)%>%
+  anti_join(stop_words)%>% 
+  count(word, sort=TRUE)
+
+article2 <- article2 %>%
+  unnest_tokens(word, article2)%>%
+  anti_join(stop_words)%>% 
+  count(word, sort=TRUE)
+
+article3 <- article3 %>%
+  unnest_tokens(word, article3)%>%
+  anti_join(stop_words)%>% 
+  count(word, sort=TRUE)
+
+article4 <- article4 %>%
+  unnest_tokens(word, article4)%>%
+  anti_join(stop_words)%>% 
+  count(word, sort=TRUE)
+
+article5 <- article5 %>%
+  unnest_tokens(word, article5)%>%
+  anti_join(stop_words)%>% 
+  count(word, sort=TRUE)
+
+article6 <- article6 %>%
+  unnest_tokens(word, article6)%>%
+  anti_join(stop_words)%>% 
+  count(word, sort=TRUE)
+
+article7 <- article7 %>%
+  unnest_tokens(word, article7)%>%
+  anti_join(stop_words)%>% 
+  count(word, sort=TRUE)
+
+article8 <- article8 %>%
+  unnest_tokens(word, article8)%>%
+  anti_join(stop_words)%>% 
+  count(word, sort=TRUE)
+
+article9 <- article9 %>%
+  unnest_tokens(word, article9)%>%
+  anti_join(stop_words)%>% 
+  count(word, sort=TRUE)
+
+article10 <- article10 %>%
+  unnest_tokens(word, article10)%>%
+  anti_join(stop_words)%>% 
+  count(word, sort=TRUE)
+
+article11 <- article11 %>%
+  unnest_tokens(word, article11)%>%
+  anti_join(stop_words)%>% 
+  count(word, sort=TRUE)
+
+article12 <- article12 %>%
+  unnest_tokens(word, article12)%>%
+  anti_join(stop_words)%>% 
+  count(word, sort=TRUE)
+
+```
+
+Once the word frequencies have been found, the 12 articles will be compared using sentiment analysis to see if the different articles generally align or not.
+
+```{r, include = F}
+
+# helps with the sentiment analysis, using package "textdata"
+# Sentiment Analysis is good for a high level view -> not something to be concrete about (take with a grain of salt)
+get_sentiments('afinn')# we see a list of words and there classification, 2,467 - not really that many overall
+get_sentiments('nrc')# looks like a good amount more 13,891, but words are classified in several different categories
+get_sentiments('bing')# looks like a good amount more 6,776, but as we can see just negative and positive
+
+```
+
+```{r, include = F}
+
+# Inner join all the sentiments to each of the articles
+
+sentiment_affin1 <- article1 %>%
+  inner_join(get_sentiments("afinn")) # using a inner join to match words and add the sentiment variable
+sentiment_nrc1 <- article1 %>%
+  inner_join(get_sentiments("nrc"))
+sentiment_bing1 <- article1 %>%
+  inner_join(get_sentiments("bing"))
+
+sentiment_affin2 <- article2 %>%
+  inner_join(get_sentiments("afinn")) # using a inner join to match words and add the sentiment variable
+sentiment_nrc2 <- article2 %>%
+  inner_join(get_sentiments("nrc"))
+sentiment_bing2 <- article2 %>%
+  inner_join(get_sentiments("bing"))
+
+sentiment_affin3 <- article3 %>%
+  inner_join(get_sentiments("afinn")) # using a inner join to match words and add the sentiment variable
+sentiment_nrc3 <- article3 %>%
+  inner_join(get_sentiments("nrc"))
+sentiment_bing3 <- article3 %>%
+  inner_join(get_sentiments("bing"))
+
+sentiment_affin4 <- article4 %>%
+  inner_join(get_sentiments("afinn")) # using a inner join to match words and add the sentiment variable
+sentiment_nrc4 <- article4 %>%
+  inner_join(get_sentiments("nrc"))
+sentiment_bing4 <- article4 %>%
+  inner_join(get_sentiments("bing"))
+
+sentiment_affin5 <- article5 %>%
+  inner_join(get_sentiments("afinn")) # using a inner join to match words and add the sentiment variable
+sentiment_nrc5 <- article5 %>%
+  inner_join(get_sentiments("nrc"))
+sentiment_bing5 <- article5 %>%
+  inner_join(get_sentiments("bing"))
+
+sentiment_affin6 <- article6 %>%
+  inner_join(get_sentiments("afinn")) # using a inner join to match words and add the sentiment variable
+sentiment_nrc6 <- article6 %>%
+  inner_join(get_sentiments("nrc"))
+sentiment_bing6 <- article6 %>%
+  inner_join(get_sentiments("bing"))
+
+sentiment_affin7 <- article7 %>%
+  inner_join(get_sentiments("afinn")) # using a inner join to match words and add the sentiment variable
+sentiment_nrc7 <- article7 %>%
+  inner_join(get_sentiments("nrc"))
+sentiment_bing7 <- article7 %>%
+  inner_join(get_sentiments("bing"))
+
+sentiment_affin8 <- article8 %>%
+  inner_join(get_sentiments("afinn")) # using a inner join to match words and add the sentiment variable
+sentiment_nrc8 <- article8 %>%
+  inner_join(get_sentiments("nrc"))
+sentiment_bing8 <- article8 %>%
+  inner_join(get_sentiments("bing"))
+
+sentiment_affin9 <- article9 %>%
+  inner_join(get_sentiments("afinn")) # using a inner join to match words and add the sentiment variable
+sentiment_nrc9 <- article9 %>%
+  inner_join(get_sentiments("nrc"))
+sentiment_bing9 <- article9 %>%
+  inner_join(get_sentiments("bing"))
+
+sentiment_affin10 <- article10 %>%
+  inner_join(get_sentiments("afinn")) # using a inner join to match words and add the sentiment variable
+sentiment_nrc10 <- article10 %>%
+  inner_join(get_sentiments("nrc"))
+sentiment_bing10 <- article10 %>%
+  inner_join(get_sentiments("bing"))
+
+sentiment_affin11 <- article11 %>%
+  inner_join(get_sentiments("afinn")) # using a inner join to match words and add the sentiment variable
+sentiment_nrc11 <- article11 %>%
+  inner_join(get_sentiments("nrc"))
+sentiment_bing11 <- article11 %>%
+  inner_join(get_sentiments("bing"))
+
+sentiment_affin12 <- article12 %>%
+  inner_join(get_sentiments("afinn")) # using a inner join to match words and add the sentiment variable
+sentiment_nrc12 <- article12 %>%
+  inner_join(get_sentiments("nrc"))
+sentiment_bing12 <- article12 %>%
+  inner_join(get_sentiments("bing"))
+```
+
+Quick comparisons can be drawn by outputting the sentiment counts of each article into tables:
+
+```{r, echo = T}
+table(sentiment_bing1$sentiment)
+table(sentiment_bing2$sentiment)
+table(sentiment_bing3$sentiment)
+table(sentiment_bing4$sentiment)
+table(sentiment_bing5$sentiment)
+table(sentiment_bing6$sentiment)
+table(sentiment_bing7$sentiment)
+table(sentiment_bing8$sentiment)
+table(sentiment_bing9$sentiment)
+table(sentiment_bing10$sentiment)
+table(sentiment_bing11$sentiment)
+table(sentiment_bing12$sentiment)
+
+table(sentiment_nrc1$sentiment)
+table(sentiment_nrc2$sentiment)
+table(sentiment_nrc3$sentiment)
+table(sentiment_nrc4$sentiment)
+table(sentiment_nrc5$sentiment)
+table(sentiment_nrc6$sentiment)
+table(sentiment_nrc7$sentiment)
+table(sentiment_nrc8$sentiment)
+table(sentiment_nrc9$sentiment)
+table(sentiment_nrc10$sentiment)
+table(sentiment_nrc11$sentiment)
+table(sentiment_nrc12$sentiment)
+
+```
+
+As shown above, the majority of the articles have both positive and negative vocabulary included. Furthermore, the vocabulary of each of the articles has a lot of anticipation and fear. This makes sense, because the Northeast includes New York city in which Climate Change has a big effect on the population. In addition, the population and the amount of industrialization of New York and the Northeast has a negative effect on the climate.
+
+To further analyze, each of the sentiment analysis can be graphed:
+
+```{r , echo = T}
+# Plotting the Sentiment Analysis for Each
+ggplot(data = sentiment_affin1, 
+       aes(x=value)
+        )+
+  geom_histogram()+
+  ggtitle("Article 1 Sentiment Range")+
+  theme_minimal()
+
+ggplot(data = sentiment_affin2, 
+       aes(x=value)
+        )+
+  geom_histogram()+
+  ggtitle("Article 2 Sentiment Range")+
+  theme_minimal()
+
+ggplot(data = sentiment_affin3, 
+       aes(x=value)
+        )+
+  geom_histogram()+
+  ggtitle("Article 3 Sentiment Range")+
+  theme_minimal()
+
+ggplot(data = sentiment_affin4, 
+       aes(x=value)
+        )+
+  geom_histogram()+
+  ggtitle("Article 4 Sentiment Range")+
+  theme_minimal()
+
+ggplot(data = sentiment_affin5, 
+       aes(x=value)
+        )+
+  geom_histogram()+
+  ggtitle("Article 5 Sentiment Range")+
+  theme_minimal()
+
+
+ggplot(data = sentiment_affin6, 
+       aes(x=value)
+        )+
+  geom_histogram()+
+  ggtitle("Article 6 Sentiment Range")+
+  theme_minimal()
+
+ggplot(data = sentiment_affin7, 
+       aes(x=value)
+        )+
+  geom_histogram()+
+  ggtitle("Article 7 Sentiment Range")+
+  theme_minimal()
+
+
+ggplot(data = sentiment_affin8, 
+       aes(x=value)
+        )+
+  geom_histogram()+
+  ggtitle("Article 8 Sentiment Range")+
+  theme_minimal()
+
+
+ggplot(data = sentiment_affin9, 
+       aes(x=value)
+        )+
+  geom_histogram()+
+  ggtitle("Article 9 Sentiment Range")+
+  theme_minimal()
+
+ggplot(data = sentiment_affin10, 
+       aes(x=value)
+        )+
+  geom_histogram()+
+  ggtitle("Article 10 Sentiment Range")+
+  theme_minimal()
+
+
+ggplot(data = sentiment_affin11, 
+       aes(x=value)
+        )+
+  geom_histogram()+
+  ggtitle("Article 11 Sentiment Range")+
+  theme_minimal()
+
+
+ggplot(data = sentiment_affin12, 
+       aes(x=value)
+        )+
+  geom_histogram()+
+  ggtitle("Article 12 Sentiment Range")+
+  theme_minimal()
+
+```
+
+The histograms demonstrate a wide range of different sentiments between the articles. There was a lot of positive sentiment in a little less than half the articles, and a lot of negative sentiment in a little more than half the articles. The positive sentiment may stem from the hopefulness of changes and laws possibly being enacted in the region, as it is very liberal. In addition, the negative sentiment and fear could stem from the authors trying to "scare" the population into caring about the climate. Lastly, climate change itself is a negative topic in that there is little benefit that comes from it. Therefore, it is understandable, especially in the Northeast, that there is a lot of negative sentiment.
+
+To further analyze the wording and sentiment of each of the individual articles, a cloud diagram of the most repeated words has been created for each of the articles:
+
+```{r, echo = T}
+#https://www.jfklibrary.org/asset-viewer/archives/TNC/TNC-172/TNC-172
+
+# Could also do simple word clouds as we see, Trump is much more focused on the US whereas Kennedy references the "World" at a higher rate. 
+
+# below uses the ggwordcloud package for each of the speeches
+set.seed(42)
+ggplot(article1[1:50,], aes(label = word, size = n)
+       ) +
+  geom_text_wordcloud() +
+  theme_minimal()
+
+ggplot(article2[1:50,], aes(label = word, size = n)
+       ) +
+  geom_text_wordcloud() +
+  theme_minimal()
+
+ggplot(article3[1:50,], aes(label = word, size = n)
+       ) +
+  geom_text_wordcloud() +
+  theme_minimal()
+
+ggplot(article4[1:50,], aes(label = word, size = n)
+       ) +
+  geom_text_wordcloud() +
+  theme_minimal()
+
+ggplot(article5[1:50,], aes(label = word, size = n)
+       ) +
+  geom_text_wordcloud() +
+  theme_minimal()
+
+ggplot(article6[1:50,], aes(label = word, size = n)
+       ) +
+  geom_text_wordcloud() +
+  theme_minimal()
+
+ggplot(article7[1:50,], aes(label = word, size = n)
+       ) +
+  geom_text_wordcloud() +
+  theme_minimal()
+
+ggplot(article8[1:50,], aes(label = word, size = n)
+       ) +
+  geom_text_wordcloud() +
+  theme_minimal()
+
+ggplot(article9[1:50,], aes(label = word, size = n)
+       ) +
+  geom_text_wordcloud() +
+  theme_minimal()
+
+ggplot(article10[1:50,], aes(label = word, size = n)
+       ) +
+  geom_text_wordcloud() +
+  theme_minimal()
+
+ggplot(article11[1:50,], aes(label = word, size = n)
+       ) +
+  geom_text_wordcloud() +
+  theme_minimal()
+
+ggplot(article12[1:50,], aes(label = word, size = n)
+       ) +
+  geom_text_wordcloud() +
+  theme_minimal()
+```
+
+As shown above, the most common word in all of the articles was "climate". This is reasonable as the focus on each of these articles is the climate. In addition, a lot of the articles spoke in the global sense and had a lot of global terminology. The majority of the articles were from New York, which is a global city, so the outcome of the bubble figures corresponds to that aspect. Lastly, unsurprisingly, there were various economics related words that could potentially be due to the large finance industry in the Northeast, especially with wall street.
+
+To prepare for analysis with the other regions in the country, a TF-IDF is created. Each of the articles will be a "document" and the region of the Northeast will be the corpus. Thus, I will be able to analyze the relative importance of the words in each article as compared to the overall region. The TF (Term Frequency) is how much a term shows up in Corpus, and the IDF (Inverse Document Frequency) is how much a term shows in each article. The higher the number, the more important that word is to that specific article in relation to all the articles in the region.
+
+```{r, include = F}
+# Data Preparation Function -> transpose data into different columns for presidents not different rows for presidents
+# y & z are the range of columns we want to use to combine into a single cell
+# we want everything put together, not in a bunch of different rows/columns
+# basically just merging everything together
+data_prep <- function(x,y,z){
+  i <- as_tibble(t(x))
+  ii <- unite(i,"text",y:z,remove = TRUE,sep = "")
+}
+
+# Transpose each individually 
+article1_bag <- data_prep(article1_raw,'V1','V23')
+article2_bag <- data_prep(article2_raw,'V1','V33')
+article3_bag <- data_prep(article3_raw,'V1','V57')
+article4_bag <- data_prep(article4_raw,'V1','V41')
+article5_bag <- data_prep(article5_raw,'V1','V26')
+article6_bag <- data_prep(article6_raw,'V1','V20')
+article7_bag <- data_prep(article7_raw,'V1','V22')
+article8_bag <- data_prep(article8_raw,'V1','V21')
+article9_bag <- data_prep(article9_raw,'V1','V54')
+article10_bag <- data_prep(article10_raw,'V1','V14')
+article11_bag <- data_prep(article11_raw,'V1','V38')
+article12_bag <- data_prep(article12_raw,'V1','V34')
+
+article <- c("Article 1","Article 2","Article 3","Article 4","Article 5","Article 6","Article 7","Article 8","Article 9","Article 10","Article 11","Article 12")
+
+# Create a table of all the articles
+tf_idf_text <- tibble(article,text=t(tibble(article1_bag, article2_bag, article3_bag, article4_bag, article5_bag, article6_bag, article7_bag, article8_bag, article9_bag, article10_bag, article11_bag, article12_bag, .name_repair = "universal")))
+# View(tf_idf_text)
+
+# Count of the words in each individual speech
+word_count <- tf_idf_text %>%
+  unnest_tokens(word, text) %>%
+  count(article, word, sort = TRUE)
+
+# Total words said by each president
+total_words <- word_count %>% 
+  group_by(article) %>% 
+  summarize(total = sum(n))
+
+# Create a new dataset & join the word count & total words
+article_words <- left_join(word_count, total_words)
+# View(inag_words)
+
+# Bind 
+article_words <- article_words %>%
+  bind_tf_idf(word, article, n)
+```
+
+
+```{r, echo = T}
+article_words[order(article_words$tf_idf, decreasing = T, na.last = F),]
+```
+
+The highest tf-idf value is found to be in article 9 and the word prize. This correlates with the positive sentiment values found above in the Northeast. The word "prize" may be associated with new and novel ideas, technology, and legislation to combat the growing problem of climate change. This demonstrates that the Northeast is ahead in the change that climate change commands. In addition, another important word to consider is "city", "capital", "private", and "virginia", which are all locations and should not necessarily have any sentiment awarded to them. However, it could be that "capital" and "private" could be interpreded in regards to money and may have a positive association. It is crucial to understand the context in which the articles are talking about.
+
+```{r, include = F}
+sentiment_affin_all <- article_words %>%
+  inner_join(get_sentiments("afinn")) # using a inner join to match words and add the sentiment variable
+sentiment_nrc_all <- article_words %>%
+  inner_join(get_sentiments("nrc"))
+sentiment_bing_all <- article_words %>%
+  inner_join(get_sentiments("bing"))
+```
+
+```{r, echo = T}
+table(sentiment_bing_all$sentiment)
+table(sentiment_nrc_all$sentiment)
+```
+
+```{r, echo = T}
+ggplot(data = sentiment_affin_all, 
+       aes(x=value)
+        )+
+  geom_histogram()+
+  ggtitle("All Articles Sentiment Range")+
+  theme_minimal()
+```
+
+The sentiments of the combined articles can be seen above. The articles seemed to have generally a higher number of positive words included, though not by much. In addition, the general sentiment seemed to be more associated with trust rather than any negative connotations. This could be due to the general understanding that climate change is a real and scary issue in the Northeast. However, that could also be from articles trying to persuade readers to believe what they are saying about the climate and that it is necessary to act now. Because New York Times originates from New York city a global hub of tech, finance, and art, there is a lot of global news that may be written. For example, the positive connotations from the words could be related to the news outlet talking about the strides other countries have taken. In addition, although New York has a lot of CO2 emissions, the rest of the Northeast tends to not be constructed of very large metropolitan areas and is fairly liberal. Thus, the positive sentiment in the articles could be a result of change in legislation happening. 
+
+The top words in the Northeast region can be seen below in the cloud graph and the table. 
+
+```{r, echo = T}
+article_words_nostop <- article_words %>% distinct(word, .keep_all = TRUE) %>% anti_join(stop_words)
+set.seed(42)
+ggplot(article_words_nostop[1:200,], aes(label = word, size = n)
+       ) +
+  geom_text_wordcloud() +
+  theme_minimal()
+```
+
+As seen in the graph and the table, the most common words found in all the articles were "climate" and "change", which is completely reasonable as the focus of each was climate change. However, other common words include "dr", "prize", "nations", all of which have generally positive sentiments. This corresponds to the analysis done above. Although all of the words generally have positive connotations, it is important to understand the context behind each article and see how each word is being used in the articles entirety. For example, "dr" could just be referencing the titles of people, but could be considered a positive word. In addition, "prize" could be referencing that an individual won an award when introducing their opinion in an article, and not that there is a prize pertaining to the benefit of combating climate change.
+
+
+```{r, include=F}
+write_csv(article_words, path = "~/Documents/article_words_NE.csv")
+```
+
