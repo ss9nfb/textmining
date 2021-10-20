@@ -149,7 +149,7 @@ ggplot(MW[1:50,], aes(label = word, size = n)
 ```
 
 Indicated in the word cloud, the top represented words are typical of climate change topics, specifically: climate, change, global, warming, heat. However, the words specific to the Midwest would include: lakes, water, Chicago, birds. These words are related to the area distinctive to the Midwest, such as the Great Lakes. This word cloud is visually as expected, with the inclusion of more general climate change words but also the inclusion of Midwest-specific terms.
-In the table outputted below, it includes the top 25 words, sorted from most significant to least significant.
+In the table outputted below, it includes the top 25 words, sorted from most significant to least significant. 
 
 <br/>
 
@@ -163,6 +163,40 @@ head(top_25)
 /--------------------
 
 #### West : LA Times
+
+```{r}
+newspaper_words_sentiment_affin <- W %>%
+  inner_join(get_sentiments("afinn"))
+
+newspaper_words_sentiment_nrc <- W %>%
+  inner_join(get_sentiments("nrc"))
+
+newspaper_words_sentiment_bing <- W %>%
+  inner_join(get_sentiments("bing"))
+
+table(newspaper_words_sentiment_bing$sentiment)
+table(newspaper_words_sentiment_nrc$sentiment)
+  
+ggplot(data = newspaper_words_sentiment_affin, 
+       aes(x=value)
+        )+
+  geom_histogram()+
+  ggtitle("LA Times Sentiment Range")+
+  theme_minimal()
+```
+For most of the articles, there is a significant gap between the number of positive and negative words, which is seen in the output of each of the bing sentiment analysis. Majority of the articles (7 out of the 10) include more negative words than positive words, and that makes sense based on the topic of the articles. Climate change is a very huge issue that takes place in the world, and the best way to get people to realize this is by raising the concern and making it clear that something must be done. On top of that, by comparing the results of the nrc sentiment analysis, it can be concluded that many of the words represent fear, trust, and anticipation. 
+
+```{r}
+#LA times word cloud 
+
+ggplot(W[1:50,], aes(label = word, size = n)
+       ) +
+  geom_text_wordcloud() +
+  theme_minimal()
+```
+Based on the output of the word cloud that corresponds to the LA Times newspaper, which in this case is the corpus formed by combining the articles (documents), the most commonly said words are those that appear bolder, larger, an more often. Therefore, it seems that words such as "drought", "water","fire", and "climate" are mentioned quite often in Los Angeles Times Newspaper articles about climate change. 
+
+
 
 
 #### South : Richmond Times Dispatch
