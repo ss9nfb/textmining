@@ -208,5 +208,46 @@ Based on the output of the word cloud that corresponds to the LA Times newspaper
 
 #### South : Richmond Times Dispatch
 
+I created an TF-IDF table from the left join of the word count and the total words. TF stands for Term Frequency, and IDF stands for Inverse Document Frequency. Term frequency is a metric to see how frequently a word shows up in the data when compared to the entire dataset. The inverse document frequency measures how much a word shows up in the article that it is originally from. The TF-IDF column is the values of the term frequency and the inverse document frequency multiplied together, and it represents the how crucial each word to its respective article in the scope of the entire dataset. I sorted My TF-IDF table in decreasing order so I could easily see which word was the most critical to my dataset. The word with the highest TF-IDF was migration, with a value of 0.06578. I believe this is because the article talks about the effect of people migration on climate change. Since the entire article has is concerned with migration, it makes sense that migration has the largest TF-IDF value.
 
+```{r}
+wordcloud <- function(x){
+  set.seed(42)
+  ggplot(x[1:50, ], aes(label = word, size = n)
+       ) +
+    geom_text_wordcloud() +
+    theme_minimal()
+}
+afinnplot <- function(y){
+  ggplot(data = y, 
+       aes(x = value)
+        )+
+  geom_histogram()+
+  ggtitle("Sentiment Range")+
+  theme_minimal()
+}
+S[order(S$tf_idf, decreasing = T, na.last = F),]
+```
+The wordcloud that I made using the ten datasets combined was interesting to analyze. The first thing that I noticed was that one of my top words was "rice". I was confused when I saw this, until I took examined the news article that the high frequency of "rice" had occurred in. The article was about a new climate change research center that had recently opened. The research center was named the Rice Rivers Center, hence why the word "rice" was one of the most prominent words in my word cloud. Another prominent word in my wordcloud was "building", which also was from the article about the Rice Rivers climate change research center. I also noticed that the word "climate" was repeated multiple times, and was relatively large as well. This means that "climate" was repeated many times in several of the articles that were analyzed. This makes sense, as the articles were focused on climate change, in one way or another. One medium-sized word that I believed would have been larger or more repeated was "pollution". I thought that news articles would be mentioning reducing pollution to slow down climate change or the amount of pollution and its effect on climate change. However, it seems like "pollution" was only prominent in a singular article - article 9.
 
+```{r}
+totalwordcloud <- wordcloud(S)
+totalwordcloud
+```
+
+A histogram was created using the sentiments using the entirety of the ten datasets that I used. The words that were used in my news articles were extremely negative. There were over 175 words that had a negative sentiment value, compared to under 120 words that had a positive sentiment value. In addition to the large numerical difference between the two sentiments, there was also a large difference in the degree of positivity versus the degree of negativity. There were almost fifty words used in the articles that had a sentiment value below negative two and a half. On the other hand, there were less than five words used in the articles that had a sentiment value of over positive two and a half.
+
+```{r}
+S_afinn <- S %>%
+  inner_join(get_sentiments("afinn"))
+plot1 <- afinnplot(S_afinn)
+plot1
+```
+I created a table from the sentimental values returned by checking the words in my datasets with the nrc table. The table that was returned was interesting to see, as it slightly contradicted my histogram at first glance. The category with the most amount of words is the positive category, which doesn't align with what the histogram represented. However, when looking at the other sentiments, there were 61 words under the disgust category, 150 under the fear category, 221 under the negative category, and 97 under the sadness category. This aligns more with with the histogram from earlier, as the histogram showed a larger degree of negatively charged words. This is also reflected in the table, as words that fall under disgust or anger are more likely to be negatively charged.
+
+```{r}
+S_nrc <- S %>%
+  inner_join(get_sentiments("nrc"))
+table(S_nrc$sentiment)
+
+```
