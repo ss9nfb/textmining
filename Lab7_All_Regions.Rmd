@@ -47,7 +47,7 @@ S <- read_csv("south_words.csv")
 NE[order(NE$tf_idf, decreasing = T, na.last = F),]
 ```
 
-The highest tf-idf value is found to be in article 9 and the word prize. This correlates with the positive sentiment values found above in the Northeast. The word "prize" may be associated with new and novel ideas, technology, and legislation to combat the growing problem of climate change. This demonstrates that the Northeast is ahead in the change that climate change commands. In addition, another important word to consider is "city", "capital", "private", and "virginia", which are all locations and should not necessarily have any sentiment awarded to them. However, it could be that "capital" and "private" could be interpreded in regards to money and may have a positive association. It is crucial to understand the context in which the articles are talking about.
+The highest tf-idf value is found to be in article 9 and the word prize. This correlates with the positive sentiment values found above in the Northeast. The word "prize" may be associated with new and novel ideas, technology, and legislation to combat the growing problem of climate change. This demonstrates that the Northeast is ahead in the change that climate change commands. In addition, another important word to consider is "city", "capital", "private", and "virginia", which are all locations and should not necessarily have any sentiment awarded to them. However, it could be that "capital" and "private" could be interpreted in regards to money and may have a positive association. It is crucial to understand the context in which the articles are talking about.
 
 ```{r, include = F}
 sentiment_affin_all <- NE %>%
@@ -69,6 +69,7 @@ ggplot(data = sentiment_affin_all,
   ggtitle("All Articles Sentiment Range")+
   theme_minimal()
 ```
+
 The sentiments of the combined articles can be seen above. The articles seemed to have generally a higher number of positive words included, though not by much. In addition, the general sentiment seemed to be more associated with trust rather than any negative connotations. This could be due to the general understanding that climate change is a real and scary issue in the Northeast. However, that could also be from articles trying to persuade readers to believe what they are saying about the climate and that it is necessary to act now. Because New York Times originates from New York city a global hub of tech, finance, and art, there is a lot of global news that may be written. For example, the positive connotations from the words could be related to the news outlet talking about the strides other countries have taken. In addition, although New York has a lot of CO2 emissions, the rest of the Northeast tends to not be constructed of very large metropolitan areas and is fairly liberal. Thus, the positive sentiment in the articles could be a result of change in legislation happening. 
 
 The top words in the Northeast region can be seen below in the cloud graph and the table. 
@@ -76,11 +77,12 @@ The top words in the Northeast region can be seen below in the cloud graph and t
 ```{r, echo = T}
 article_words_nostop <- NE %>% distinct(word, .keep_all = TRUE) %>% anti_join(stop_words)
 set.seed(42)
-ggplot(article_words_nostop[1:200,], aes(label = word, size = n)
+ggplot(article_words_nostop[1:50,], aes(label = word, size = n)
        ) +
   geom_text_wordcloud() +
   theme_minimal()
 ```
+
 As seen in the graph and the table, the most common words found in all the articles were "climate" and "change", which is completely reasonable as the focus of each was climate change. However, other common words include "dr", "prize", "nations", all of which have generally positive sentiments. This corresponds to the analysis done above. Although all of the words generally have positive connotations, it is important to understand the context behind each article and see how each word is being used in the articles entirety. For example, "dr" could just be referencing the titles of people, but could be considered a positive word. In addition, "prize" could be referencing that an individual won an award when introducing their opinion in an article, and not that there is a prize pertaining to the benefit of combating climate change.
 
 #### Midwest : Chicago Daily Herald
@@ -152,7 +154,7 @@ W[order(W$tf_idf, decreasing = T, na.last = F),]
 ```
 The tf_idf was calculated for the words in these articles, using tf_idf = tf*idf, which shows the general pattern of importance of certain words. To clarify, tf is the term frequency, and idf is the inverse document frequency. The importance and tf_idf are directly related, meaning the higher the value of the tf_idf, the more important the word is in the article. Therefore, the most important words that make sense in this situtaiton in the western region (Los Angeles Times) are words such as lands, investors, water, fire, visitation, defense, military, breaking, park, etc. When the tf_idf value were arranged in descending order, it was found that the highest tf_idf value was 0.05055576 for land, which totally makes sense. Climate change has had a significant effect on our land, so it makes sense that "land" is the most important word. 
 
-```{r, warning=FALSE}
+```{r, message=FALSE}
 newspaper_words_sentiment_nrc <- W %>%
   inner_join(get_sentiments("nrc"))
 newspaper_words_sentiment_bing <- W %>%
@@ -162,7 +164,7 @@ table(newspaper_words_sentiment_nrc$sentiment)
 ```
 For most of the articles, there is a significant gap between the number of positive and negative words, which is seen in the output of each of the bing sentiment analysis. Majority of the articles (7 out of the 10) include more negative words than positive words, 213 negative vs 117 positive in total, which is almost a 2:1 ration, and that makes sense based on the topic of the articles. Climate change is a very huge issue that takes place in the world, and the best way to get people to realize this is by raising the concern and making it clear that something must be done. On top of that, by comparing the results of the nrc sentiment analysis, it can be concluded that many of the words represent fear, trust, and anticipation, as they are the top 3 most counted for words. 
 
-```{r, warning=FALSE}
+```{r, message=FALSE}
 newspaper_words_sentiment_affin <- W %>%
   inner_join(get_sentiments("afinn"))
   
@@ -173,6 +175,7 @@ ggplot(data = newspaper_words_sentiment_affin,
   ggtitle("LA Times Sentiment Range")+
   theme_minimal()
 ```
+
 It can be concluded that the histogram agrees with the nrc and bing sentiment analysis. This can be seen by the high negativity, higher word count below 0, and low positivity, lower word count above 0. Therefore, the words are more skewed to the left, indicating that the western region articles tend to be more negative. 
 
 ```{r}
@@ -182,6 +185,7 @@ ggplot(W[1:50,], aes(label = word, size = n)
   geom_text_wordcloud() +
   theme_minimal()
 ```
+
 Based on the output of the word cloud that corresponds to the LA Times newspaper, which in this case is the corpus formed by combining the articles (documents), the most commonly said words are those that appear bolder, larger, an more often. Therefore, it seems that words such as "drought", "water","fire", and "climate" are mentioned quite often in Los Angeles Times Newspaper articles about climate change. This completely makes sense because in the western region, especially California, they often suffer from droughts, and wild fires. One of the most surprising words for me was "change" as I thought this word would possibly appear bolder and larger, because it would make sense that this word would be used often in articles about climate CHANGE. 
 
 
@@ -218,12 +222,13 @@ totalwordcloud
 
 A histogram was created using the sentiments using the entirety of the ten datasets that I used. The words that were used in my news articles were extremely negative. There were over 175 words that had a negative sentiment value, compared to under 120 words that had a positive sentiment value. In addition to the large numerical difference between the two sentiments, there was also a large difference in the degree of positivity versus the degree of negativity. There were almost fifty words used in the articles that had a sentiment value below negative two and a half. On the other hand, there were less than five words used in the articles that had a sentiment value of over positive two and a half.
 
-```{r, warning=FALSE}
+```{r, message=FALSE}
 S_afinn <- S %>%
   inner_join(get_sentiments("afinn"))
 plot1 <- afinnplot(S_afinn)
 plot1
 ```
+
 I created a table from the sentimental values returned by checking the words in my datasets with the nrc table. The table that was returned was interesting to see, as it slightly contradicted my histogram at first glance. The category with the most amount of words is the positive category, which doesn't align with what the histogram represented. However, when looking at the other sentiments, there were 61 words under the disgust category, 150 under the fear category, 221 under the negative category, and 97 under the sadness category. This aligns more with with the histogram from earlier, as the histogram showed a larger degree of negatively charged words. This is also reflected in the table, as words that fall under disgust or anger are more likely to be negatively charged.
 
 ```{r, warning=FALSE}
@@ -246,4 +251,18 @@ top_10 <- data.frame(top_10_NE, top_10_MW, top_10_W, top_10_S)
 top_10
 ```
 
-After combining the top 10 words from each region, there is an apparent difference between the 4 regions. The West is military and defense-focused along with
+  After combining the top 10 words from each region, there is an apparent difference between the 4 regions. 
+  Starting from the Northeast region, there is an economic focus that can be characterized by the inclusion of the words "investors", "capital" and "prize." This trend can most likely be attributed to the main newspaper source for the region being the New York Times. New York City is an economically motivated city that will tend to focus specifcally on those negative impacts of climate change. Furthermore, the top words from the Northeast region were rather neutral in terms of positive and negative connotation. 
+  The Midwest region was similar in comparison to the Northeast region. There was a geographic focus that can be attributed to the Great Lakes and the impact that region will feel from climate change. This geographic focus can be highlighted by the top words "birds", "lakes," "countries." Connotatively, the words were also rather neutral and didn't tend too much towards overly positive or overly negative terms.
+  In addition, the West region had a similar geographic focus. The forest fires and droughts experienced across the West region are key contributors to the top words featured across the multiple articles. These can be characterized by the words "lands," "water," and "fire." On the other hand, there was a military element that had an overarching negative connotation across many of the terms. The Los Angeles Times is based from a large US city, which can be a reason for the particular focus on national defense.
+  Lastly, the South region had a larger variance between the themes between the top terms. Based on the general focus of the newspaper, there was an emphasis on infrastructure and the role that the migration of people into the suburbs surrounding cities contributes to climate change in the South. From this, it explains the general negative connoation of the terms featured from this region.
+  
+ *Regional Analysis Importance*
+ 
+ Concluding the regional analysis across the United States, it is crucial that there is an understanding of the factors important to each region and how those factors influence the press. Specifically in relation to climate change, the impacts are different all across the country, so it is important that there is a knowledge about the context from each section data. Regardless of the potentially inaccurate generalization from the sentiment analysis, it is useful to grasp a general understanding prior to full analysis. 
+ 
+ Recommendations:
+ 
+ 1. Perform sentiment analysis on each region
+ 2. Understand the data in terms of the context of each document
+ 3. Make conclusions based on that understanding
