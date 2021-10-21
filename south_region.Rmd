@@ -1,0 +1,355 @@
+---
+title: "South Region - Richmond Times Dispatch"
+author: "Samarth Saxena"
+date: "10/20/2021"
+output:
+   html_document:
+      toc: TRUE
+      theme:
+        bootswatch: yeti
+      toc_float: TRUE
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, warning = FALSE, message = FALSE)
+```
+
+```{r, include=FALSE, message=FALSE}
+library(tidyverse)
+#install.packages("tidytext")
+library(tidytext)
+#install.packages("ggwordcloud")
+library(ggwordcloud)
+#install.packages("gutenbergr") 
+#library(gutenbergr)
+#install.packages('textdata')
+library(textdata)
+#setwd("/cloud/project/tidytext")
+#save.image("tidytext.RData")
+
+```
+### General Procedure
+
+1. Load data and necessary packages
+2. Read in each article (total of 10-12), clean the data and do individual sentiment analysis and produce word clouds
+3. Merge the article data together and do sentiment analysis of the entirety of the Chicago Daily Herald
+4. Conduct TF-IDF analysis
+5. Produce and analyze a sentiment range graph
+6. Produce and analyze a word cloud, highlighting the top 50 represented words
+7. Produce and analyze a sentiment category table.
+
+### Setup
+First, I loaded in the necessary packages. Then, I imported afinn, nrc, and bing from get sentiments. After this, I created most of the functions that I used throughout the analysis of the articles. I created a convert function, that would take in raw data and convert it into a tokenized data frame. Next, I created a wordcloud function, which would receive a data frame and return a wordcloud plot. After this, I created the afinnplot function, which receives a data frame and returns a histogram plot. The next two functions, nrcplot and bingplot, were similar, except they return scatterplot graphs. Then, I read in every single txt file and save them as variables. 
+```{r, include=FALSE, message=FALSE}
+get_sentiments('afinn')# we see a list of words and there classification, 2,467 - not really that many overall. 
+
+get_sentiments('nrc')# looks like a good amount more 13,891, but as we can see words are classified in several different categories. 
+
+get_sentiments('bing')# looks like a good amount more 6,776, but as we can see just negative and positive. 
+
+convert <- function(x){
+  x <- tibble(x)
+  x$x <- as.character(x$x)
+  x <- x %>%
+  unnest_tokens(word, x)%>%
+  anti_join(stop_words)%>% 
+  count(word, sort=TRUE)
+}
+
+wordcloud <- function(x){
+  set.seed(42)
+  ggplot(x[1:50, ], aes(label = word, size = n)
+       ) +
+    geom_text_wordcloud() +
+    theme_minimal()
+}
+afinnplot <- function(y){
+  ggplot(data = y, 
+       aes(x = value)
+        )+
+  geom_histogram()+
+  ggtitle("Sentiment Range")+
+  theme_minimal()
+}
+
+bingplot <- function(y){
+  ggplot(data = y, 
+       aes(x= sentiment, y = n)
+        )+
+  geom_point()+
+  ggtitle("Sentiment Range")+
+  theme_minimal()
+}
+nrcplot <- function(y){
+  ggplot(data = y, 
+       aes(x= sentiment, y = n)
+        )+
+  geom_point()+
+  ggtitle("Sentiment Frequency")+
+  theme_minimal()
+}
+
+news1 <- read_lines("news1.txt")
+news2 <- read_lines("news2.txt")
+news3 <- read_lines("news3.txt")
+news4 <- read_lines("news4.txt")
+news5 <- read_lines("news5.txt")
+news6 <- read_lines("news6.txt")
+news7 <- read_lines("news7.txt")
+news8 <- read_lines("news8.txt")
+news9 <- read_lines("news9.txt")
+news10 <- read_lines("news10.txt")
+```
+### Execution
+
+Now, I utilized the functions that I created earlier. I use convert on every function to convert them into the proper format. Then, I created wordcloud graphs for every dataset. I printed one graph so the results can be seen.
+
+```{r, include=FALSE, message=FALSE}
+news1 <- convert(news1)
+news2 <- convert(news2)
+news3 <- convert(news3)
+news4 <- convert(news4)
+news5 <- convert(news5)
+news6 <- convert(news6)
+news7 <- convert(news7)
+news8 <- convert(news8)
+news9 <- convert(news9)
+news10 <- convert(news10)
+
+wordcloud1 <- wordcloud(news1)
+wordcloud2 <- wordcloud(news2)
+wordcloud3 <- wordcloud(news3)
+wordcloud4 <- wordcloud(news4)
+wordcloud5 <- wordcloud(news5)
+wordcloud6 <- wordcloud(news6)
+wordcloud7 <- wordcloud(news7)
+wordcloud8 <- wordcloud(news8)
+wordcloud9 <- wordcloud(news9)
+wordcloud10 <- wordcloud(news10)
+```
+```{r, message=FALSE}
+wordcloud1
+```
+
+I then inner joined the datasets with the afinn, bing, and nrc tables and set each inner join operation equal to its own table. After this, I used the plotting functions that I created earlier to create each type of graph for every dataset. I printed one so the results can be seen. 
+
+```{r, include=FALSE, message=FALSE}
+
+news1_afinn <- news1 %>%
+  inner_join(get_sentiments("afinn"))
+  
+news1_nrc <- news1 %>%
+  inner_join(get_sentiments("nrc"))
+
+news1_bing <- news1 %>%
+  inner_join(get_sentiments("bing"))
+
+news2_afinn <- news2 %>%
+  inner_join(get_sentiments("afinn"))
+  
+news2_nrc <- news2 %>%
+  inner_join(get_sentiments("nrc"))
+
+news2_bing <- news2 %>%
+  inner_join(get_sentiments("bing"))
+
+news3_afinn <- news3 %>%
+  inner_join(get_sentiments("afinn"))
+  
+news3_nrc <- news3 %>%
+  inner_join(get_sentiments("nrc"))
+
+news3_bing <- news3 %>%
+  inner_join(get_sentiments("bing"))
+
+news4_afinn <- news4 %>%
+  inner_join(get_sentiments("afinn"))
+  
+news4_nrc <- news4 %>%
+  inner_join(get_sentiments("nrc"))
+
+news4_bing <- news4 %>%
+  inner_join(get_sentiments("bing"))
+
+news5_afinn <- news5 %>%
+  inner_join(get_sentiments("afinn"))
+  
+news5_nrc <- news5 %>%
+  inner_join(get_sentiments("nrc"))
+
+news5_bing <- news5 %>%
+  inner_join(get_sentiments("bing"))
+
+news6_afinn <- news6 %>%
+  inner_join(get_sentiments("afinn"))
+  
+news6_nrc <- news6 %>%
+  inner_join(get_sentiments("nrc"))
+
+news6_bing <- news6 %>%
+  inner_join(get_sentiments("bing"))
+
+news7_afinn <- news7 %>%
+  inner_join(get_sentiments("afinn"))
+  
+news7_nrc <- news7 %>%
+  inner_join(get_sentiments("nrc"))
+
+news7_bing <- news7 %>%
+  inner_join(get_sentiments("bing"))
+
+news8_afinn <- news8 %>%
+  inner_join(get_sentiments("afinn"))
+  
+news8_nrc <- news8 %>%
+  inner_join(get_sentiments("nrc"))
+
+news8_bing <- news8 %>%
+  inner_join(get_sentiments("bing"))
+
+news9_afinn <- news9 %>%
+  inner_join(get_sentiments("afinn"))
+  
+news9_nrc <- news9 %>%
+  inner_join(get_sentiments("nrc"))
+
+news9_bing <- news9 %>%
+  inner_join(get_sentiments("bing"))
+
+news10_afinn <- news10 %>%
+  inner_join(get_sentiments("afinn"))
+  
+news10_nrc <- news10 %>%
+  inner_join(get_sentiments("nrc"))
+
+news10_bing <- news10 %>%
+  inner_join(get_sentiments("bing"))
+
+afinn1 <- afinnplot(news1_afinn)
+bing1 <- bingplot(news1_bing)
+nrc1 <- nrcplot(news1_nrc)
+afinn2 <- afinnplot(news2_afinn)
+bing2 <- bingplot(news2_bing)
+nrc2 <- nrcplot(news2_nrc)
+afinn3 <- afinnplot(news3_afinn)
+bing3 <- bingplot(news3_bing)
+nrc3 <- nrcplot(news3_nrc)
+afinn4 <- afinnplot(news4_afinn)
+bing4 <- bingplot(news4_bing)
+nrc4 <- nrcplot(news4_nrc)
+afinn5 <- afinnplot(news5_afinn)
+bing5 <- bingplot(news5_bing)
+nrc5 <- nrcplot(news5_nrc)
+afinn6 <- afinnplot(news6_afinn)
+bing6 <- bingplot(news6_bing)
+nrc6 <- nrcplot(news6_nrc)
+afinn7 <- afinnplot(news7_afinn)
+bing7 <- bingplot(news7_bing)
+nrc7 <- nrcplot(news7_nrc)
+afinn8 <- afinnplot(news8_afinn)
+bing8 <- bingplot(news8_bing)
+nrc8 <- nrcplot(news8_nrc)
+afinn9 <- afinnplot(news9_afinn)
+bing9 <- bingplot(news9_bing)
+nrc9 <- nrcplot(news9_nrc)
+afinn10 <- afinnplot(news10_afinn)
+bing10 <- bingplot(news10_bing)
+nrc10 <- nrcplot(news10_nrc)
+```
+```{r, message=FALSE}
+afinn10
+```
+
+From the histogram above, it can be seen that article 10 uses more positively connotated words, however, the degree of negativity in the negative words used is higher than that of the words that are positive. 
+
+### TF IDF Table and Total Dataset Plots
+Now, I start the process to create a TF-IDF table. I create a data_prep function, which will read in raw data and prep each set to become a TF-IDF table. Then, I combine all of the datasets together, and find the total word count and group them together. 
+```{r, include=FALSE, message=FALSE}
+data_prep <- function(x,y,z){
+  i <- as_tibble(t(x))
+  ii <- unite(i,"text",y:z,remove = TRUE,sep = "")
+}
+news1raw <- read_lines("news1.txt")
+news2raw <- read_lines("news2.txt")
+news3raw <- read_lines("news3.txt")
+news4raw <- read_lines("news4.txt")
+news5raw <- read_lines("news5.txt")
+news6raw <- read_lines("news6.txt")
+news7raw <- read_lines("news7.txt")
+news8raw <- read_lines("news8.txt")
+news9raw <- read_lines("news9.txt")
+news10raw <- read_lines("news10.txt")
+
+news1bag <- data_prep(news1raw, 'V1', 'V29')
+news2bag <- data_prep(news2raw, 'V1', 'V30')
+news3bag <- data_prep(news3raw, 'V1', 'V34')
+news4bag <- data_prep(news4raw, 'V1', 'V20')
+news5bag <- data_prep(news5raw, 'V1', 'V23')
+news6bag <- data_prep(news6raw, 'V1', 'V22')
+news7bag <- data_prep(news7raw, 'V1', 'V27')
+news8bag <- data_prep(news8raw, 'V1', 'V22')
+news9bag <- data_prep(news9raw, 'V1', 'V22')
+news10bag <- data_prep(news10raw, 'V1', 'V33')
+
+names <- c("Article 1","Article 2","Article 3", "Article 4","Article 5","Article 6", "Article 7","Article 8","Article 9", "Article 10")
+
+tf_idf_text <- tibble(names,text=t(tibble(news1bag,news2bag,news3bag,news4bag,news5bag,news6bag,news7bag,news8bag,news9bag,news10bag,.name_repair = "universal")))
+
+
+word_count <- tf_idf_text %>%
+  unnest_tokens(word, text) %>%
+  count(names, word, sort = TRUE)
+
+
+total_words <- word_count %>% 
+  group_by(names) %>% 
+  summarize(total = sum(n))
+
+article_words <- left_join(word_count, total_words)
+```
+
+I created an TF-IDF table from the left join of the word count and the total words. TF stands for Term Frequency, and IDF stands for Inverse Document Frequency. Term frequency is a metric to see how frequently a word shows up in the data when compared to the entire dataset. The inverse document frequency measures how much a word shows up in the article that it is originally from. The TF-IDF column is the values of the term frequency and the inverse document frequency multiplied together, and it represents the how crucial each word to its respective article in the scope of the entire dataset. I sorted My TF-IDF table in decreasing order so I could easily see which word was the most critical to my dataset. The word with the highest TF-IDF was migration, with a value of 0.06578. I believe this is because the article talks about the effect of people migration on climate change. Since the entire article has is concerned with migration, it makes sense that migration has the largest TF-IDF value.
+```{r, include=FALSE, message=FALSE}
+article_words <- article_words %>%
+  anti_join(stop_words) %>%
+  bind_tf_idf(word, names, n)
+article_words <- article_words[order(article_words$tf_idf, decreasing = T, na.last = F),]
+```
+```{r}
+article_words
+```
+```{r, include=FALSE, message=FALSE}
+
+totalwordcloud <- wordcloud(article_words)
+```
+
+The wordcloud that I made using the ten datasets combined was interesting to analyze. The first thing that I noticed was that one of my top words was "rice". I was confused when I saw this, until I took examined the news article that the high frequency of "rice" had occurred in. The article was about a new climate change research center that had recently opened. The research center was named the Rice Rivers Center, hence why the word "rice" was one of the most prominent words in my word cloud. Another prominent word in my wordcloud was "building", which also was from the article about the Rice Rivers climate change research center. I also noticed that the word "climate" was repeated multiple times, and was relatively large as well. This means that "climate" was repeated many times in several of the articles that were analyzed. This makes sense, as the articles were focused on climate change, in one way or another. One medium-sized word that I believed would have been larger or more repeated was "pollution". I thought that news articles would be mentioning reducing pollution to slow down climate change or the amount of pollution and its effect on climate change. However, it seems like "pollution" was only prominent in a singular article - article 9. 
+
+```{r, message=FALSE}
+totalwordcloud
+```
+
+A histogram was created using the sentiments using the entirety of the ten datasets that I used. The words that were used in my news articles were extremely negative. There were over 175 words that had a negative sentiment value, compared to under 120 words that had a positive sentiment value. In addition to the large numerical difference between the two sentiments, there was also a large difference in the degree of positivity versus the degree of negativity. There were almost fifty words used in the articles that had a sentiment value below negative two and a half. On the other hand, there were less than five words used in the articles that had a sentiment value of over positive two and a half. 
+```{r, include=FALSE, message=FALSE}
+article_words_afinn <- article_words %>%
+  inner_join(get_sentiments("afinn"))
+plot1 <- afinnplot(article_words_afinn)
+```
+```{r, message=FALSE}
+plot1
+
+```
+I created a table from the sentimental values returned by checking the words in my datasets with the nrc table. The table that was returned was interesting to see, as it slightly contradicted my histogram at first glance. The category with the most amount of words is the positive category, which doesn't align with what the histogram represented. However, when looking at the other sentiments, there were 61 words under the disgust category, 150 under the fear category, 221 under the negative category, and 97 under the sadness category. This aligns more with with the histogram from earlier, as the histogram showed a larger degree of negatively charged words. This is also reflected in the table, as words that fall under disgust or anger are more likely to be negatively charged.
+```{r, include=FALSE, message=FALSE}
+article_words_nrc <- article_words %>%
+  inner_join(get_sentiments("nrc"))
+```
+```{r, message=FALSE}
+table(article_words_nrc$sentiment)
+
+
+
+write_csv(article_words, "south_words.csv")
+```
