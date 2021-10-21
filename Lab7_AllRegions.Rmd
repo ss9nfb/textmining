@@ -163,11 +163,12 @@ head(top_25)
 /--------------------
 
 #### West : LA Times
+```{r, echo = T}
+W[order(W$tf_idf, decreasing = T, na.last = F),]
+```
+The tf_idf was calculated for the words in these articles, using tf_idf = tf*idf, which shows the general pattern of importance of certain words. To clarify, tf is the term frequency, and idf is the inverse document frequency. The importance and tf_idf are directly related, meaning the higher the value of the tf_idf, the more important the word is in the article. Therefore, the most important words that make sense in this situtaiton in the western region (Los Angeles Times) are words such as lands, investors, water, fire, visitation, defense, military, breaking, park, etc. When the tf_idf value were arranged in descending order, it was found that the highest tf_idf value was 0.05055576 for land, which totally makes sense. Climate change has had a significant effect on our land, so it makes sense that "land" is the most important word. 
 
 ```{r}
-newspaper_words_sentiment_affin <- W %>%
-  inner_join(get_sentiments("afinn"))
-
 newspaper_words_sentiment_nrc <- W %>%
   inner_join(get_sentiments("nrc"))
 
@@ -176,6 +177,12 @@ newspaper_words_sentiment_bing <- W %>%
 
 table(newspaper_words_sentiment_bing$sentiment)
 table(newspaper_words_sentiment_nrc$sentiment)
+```
+For most of the articles, there is a significant gap between the number of positive and negative words, which is seen in the output of each of the bing sentiment analysis. Majority of the articles (7 out of the 10) include more negative words than positive words, 213 negative vs 117 positive in total, which is almost a 2:1 ration, and that makes sense based on the topic of the articles. Climate change is a very huge issue that takes place in the world, and the best way to get people to realize this is by raising the concern and making it clear that something must be done. On top of that, by comparing the results of the nrc sentiment analysis, it can be concluded that many of the words represent fear, trust, and anticipation, as they are the top 3 most counted for words. 
+
+```{r}
+newspaper_words_sentiment_affin <- W %>%
+  inner_join(get_sentiments("afinn"))
   
 ggplot(data = newspaper_words_sentiment_affin, 
        aes(x=value)
@@ -184,7 +191,7 @@ ggplot(data = newspaper_words_sentiment_affin,
   ggtitle("LA Times Sentiment Range")+
   theme_minimal()
 ```
-For most of the articles, there is a significant gap between the number of positive and negative words, which is seen in the output of each of the bing sentiment analysis. Majority of the articles (7 out of the 10) include more negative words than positive words, and that makes sense based on the topic of the articles. Climate change is a very huge issue that takes place in the world, and the best way to get people to realize this is by raising the concern and making it clear that something must be done. On top of that, by comparing the results of the nrc sentiment analysis, it can be concluded that many of the words represent fear, trust, and anticipation. 
+It can be concluded that the histogram agrees with the nrc and bing sentiment analysis. This can be seen by the high negativity, higher word count below 0, and low positivity, lower word count above 0. Therefore, the words are more skewed to the left, indicating that the western region articles tend to be more negative. 
 
 ```{r}
 #LA times word cloud 
@@ -194,7 +201,7 @@ ggplot(W[1:50,], aes(label = word, size = n)
   geom_text_wordcloud() +
   theme_minimal()
 ```
-Based on the output of the word cloud that corresponds to the LA Times newspaper, which in this case is the corpus formed by combining the articles (documents), the most commonly said words are those that appear bolder, larger, an more often. Therefore, it seems that words such as "drought", "water","fire", and "climate" are mentioned quite often in Los Angeles Times Newspaper articles about climate change. 
+Based on the output of the word cloud that corresponds to the LA Times newspaper, which in this case is the corpus formed by combining the articles (documents), the most commonly said words are those that appear bolder, larger, an more often. Therefore, it seems that words such as "drought", "water","fire", and "climate" are mentioned quite often in Los Angeles Times Newspaper articles about climate change. This completely makes sense because in the western region, especially California, they often suffer from droughts, and wild fires. One of the most surprising words for me was "change" as I thought this word would possibly appear bolder and larger, because it would make sense that this word would be used often in articles about climate CHANGE. 
 
 
 
